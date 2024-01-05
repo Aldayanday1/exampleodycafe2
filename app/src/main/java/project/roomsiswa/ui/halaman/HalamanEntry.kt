@@ -25,43 +25,47 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import project.roomsiswa.R
-import project.roomsiswa.model.DetailSiswa
+import project.roomsiswa.model.DetailMenu
 import project.roomsiswa.model.EntryViewModel
 import project.roomsiswa.model.PenyediaViewModel
-import project.roomsiswa.model.UIStateSiswa
+import project.roomsiswa.model.UIStateMenu
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
 import project.roomsiswa.navigasi.SiswaTopAppBar
-import project.roomsiswa.ui.halaman.DestinasiEntry.titleRes
 
-object DestinasiEntry: DestinasiNavigasi {
-    override val route = "item_entry"
-    override val titleRes = R.string.entry_siswa
+object DestinasiMenuEntry: DestinasiNavigasi {
+    override val route = "item_entry_menu"
+    override val titleRes = R.string.title_entry_menu
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EntrySiswaScreen(
+fun EntryMenuScreen(
+    onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
+    /** Modifier untuk Behavior -> agar Appbar Menyusut saat digulir kebawah*/
     modifier: Modifier,
     viewModel: EntryViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val coroutinScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SiswaTopAppBar(
-                title = stringResource(DestinasiEntry.titleRes),
+            CafeTopAppBar(
+                title = stringResource(DestinasiMenuEntry.titleRes),
                 canNavigateBack = true,
+                navigateUp = onNavigateUp,
                 scrollBehavior = scrollBehavior
             )
         }
     ){ innerPadding ->
-        EntrySiswaBody(
-            uiStateSiswa = viewModel.uiStateSiswa,
-            onSiswaValueChange = viewModel::updateUiState,
+        EntryMenuBody(
+            uiStateMenu = viewModel.uiStateMenu,
+            onMenuValueChange = viewModel::updateUiStateMenu,
             onSaveClick = {
                 coroutinScope.launch {
-                    viewModel.saveSiswa()
+                    viewModel.saveMenu()
                     navigateBack()
                 }
             },
@@ -74,9 +78,9 @@ fun EntrySiswaScreen(
 }
 
 @Composable
-fun EntrySiswaBody(
-    uiStateSiswa: UIStateSiswa,
-    onSiswaValueChange: (DetailSiswa) -> Unit,
+fun EntryMenuBody(
+    uiStateMenu: UIStateMenu,
+    onMenuValueChange: (DetailMenu) -> Unit,
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -84,14 +88,14 @@ fun EntrySiswaBody(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_Large)),
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
     ){
-        FormInputSiswa(
-            detailSiswa = uiStateSiswa.detailSiswa,
-            onValueChange = onSiswaValueChange,
+        FormInputMenu(
+            detailMenu = uiStateMenu.detailMenu,
+            onValueChange = onMenuValueChange,
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = onSaveClick,
-            enabled = uiStateSiswa.isEntryValid,
+            enabled = uiStateMenu.isEntryValid,
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -102,37 +106,60 @@ fun EntrySiswaBody(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormInputSiswa(
-    detailSiswa: DetailSiswa,
+fun FormInputMenu(
+    detailMenu: DetailMenu,
     modifier: Modifier = Modifier,
-    onValueChange: (DetailSiswa) -> Unit = {},
+    onValueChange: (DetailMenu) -> Unit = {},
     enabled: Boolean = true
 ){
     Column (
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
+        /** OutlinedTextField memerlukan String sbg nilai value*/
         OutlinedTextField(
-            value = detailSiswa.nama,
-            onValueChange = {onValueChange(detailSiswa.copy(nama = it)) },
-            label = { Text(stringResource(R.string.nama)) },
+            value = detailMenu.idmenu?.toString() ?: "",
+            onValueChange = {
+                onValueChange(
+                    /** it = nilai yg dimasukkan */
+                    if (it.isEmpty()) detailMenu.copy(idmenu = null)
+                    else detailMenu.copy(idmenu = it.toIntOrNull())
+                )
+            },
+            label = { Text(stringResource(R.string.idmenu)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+        OutlinedTextField(
+            value = detailMenu.menu,
+            onValueChange = {onValueChange(detailMenu.copy(menu = it)) },
+            label = { Text(stringResource(R.string.menu)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
         OutlinedTextField(
-            value = detailSiswa.alamat,
-            onValueChange = {onValueChange(detailSiswa.copy(alamat = it)) },
-            label = { Text(stringResource(R.string.alamat)) },
+            value = detailMenu.harga,
+            onValueChange = {onValueChange(detailMenu.copy(harga = it)) },
+            label = { Text(stringResource(R.string.harga)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true
         )
         OutlinedTextField(
-            value = detailSiswa.telpon,
-            onValueChange = {onValueChange(detailSiswa.copy(telpon = it)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(text = stringResource(R.string.telpon)) },
+            value = detailMenu.ketersediaan,
+            onValueChange = {onValueChange(detailMenu.copy(ketersediaan = it)) },
+            label = { Text(text = stringResource(R.string.ketersediaan)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = detailMenu.kategori,
+            onValueChange = {onValueChange(detailMenu.copy(kategori = it)) },
+            label = { Text(text = stringResource(R.string.kategori)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
             singleLine = true

@@ -43,12 +43,12 @@ import project.roomsiswa.model.DetailsViewModel
 import project.roomsiswa.model.ItemDetailsPesananUiState
 import project.roomsiswa.model.PenyediaViewModel
 import project.roomsiswa.model.toPesanan
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
 object DetailsPesananDestination : DestinasiNavigasi {
     override val route = "item_details_pesanan"
-    override val titleRes = R.string.detail
+    override val titleRes = R.string.title_detail_pesanan
     const val detailIdArg = "itemId"
     val routeWithArgs = "$route/{$detailIdArg}"
 }
@@ -68,7 +68,7 @@ fun DetailsPesananScreen(
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SiswaTopAppBar(
+            CafeTopAppBar(
                 title = stringResource(DetailsPesananDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack
@@ -86,7 +86,7 @@ fun DetailsPesananScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.edit_siswa),
+                    contentDescription = stringResource(id = R.string.edit_pesanan),
                 )
             }
         },
@@ -121,7 +121,6 @@ private fun ItemPesananDetailBody(
             pesanan = itemDetailsPesananUiState.detailPesanan.toPesanan(),
             modifier = Modifier.fillMaxWidth()
         )
-        /** Tombol Button */
         /** Tombol Button */
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
@@ -164,7 +163,7 @@ fun ItemPesananDetails(
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
         ) {
             ItemPesananDetailsRow(
-                labelResID = R.string.idpesanan,
+                labelResID = R.string.idpesanan1,
                 itemDetail = pesanan.idpesanan.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
@@ -178,28 +177,28 @@ fun ItemPesananDetails(
                 )
             )
             ItemPesananDetailsRow(
-                labelResID = R.string.detail,
+                labelResID = R.string.detail1,
                 itemDetail = pesanan.detail,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
             ItemPesananDetailsRow(
-                labelResID = R.string.metode,
+                labelResID = R.string.metode1,
                 itemDetail = pesanan.metode,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
             ItemPesananDetailsRow(
-                labelResID = R.string.tanggal,
+                labelResID = R.string.tanggal1,
                 itemDetail = pesanan.tanggal,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
             ItemPesananDetailsRow(
-                labelResID = R.string.menu,
+                labelResID = R.string.idmenu1,
                 itemDetail = pesanan.idMenuForeignKey.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)

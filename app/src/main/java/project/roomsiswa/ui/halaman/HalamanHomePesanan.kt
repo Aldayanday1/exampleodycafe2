@@ -42,12 +42,12 @@ import project.roomsiswa.R
 import project.roomsiswa.data.Pesanan
 import project.roomsiswa.model.HomeViewModel
 import project.roomsiswa.model.PenyediaViewModel
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
 object DestinasiPesanan : DestinasiNavigasi {
     override val route = "pesanan"
-    override val titleRes = R.string.idpesanan
+    override val titleRes = R.string.welcome_pesanan
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +63,7 @@ fun PesananScreen(
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SiswaTopAppBar(
+            CafeTopAppBar(
                 title = stringResource(DestinasiPesanan.titleRes),
                 canNavigateBack = false,
                 scrollBehavior = scrollBehavior
@@ -77,7 +77,7 @@ fun PesananScreen(
             ){
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.idpesanan)
+                    contentDescription = stringResource(R.string.entry_pesanan)
                 )
             }
         },
@@ -164,7 +164,7 @@ fun DataPesanan(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
-                    text = stringResource(id = R.string.idpesanan),
+                    text = stringResource(id = R.string.idpesanan1),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -202,7 +202,7 @@ fun DataPesanan(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
-                    text = stringResource(id = R.string.detail),
+                    text = stringResource(id = R.string.detail1),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -221,7 +221,7 @@ fun DataPesanan(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
-                    text = stringResource(id = R.string.metode),
+                    text = stringResource(id = R.string.metode1),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -240,7 +240,7 @@ fun DataPesanan(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
-                    text = stringResource(id = R.string.tanggal),
+                    text = stringResource(id = R.string.tanggal1),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )
@@ -260,7 +260,7 @@ fun DataPesanan(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
-                    text = stringResource(id = R.string.menu),
+                    text = stringResource(id = R.string.idmenu1),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f)
                 )

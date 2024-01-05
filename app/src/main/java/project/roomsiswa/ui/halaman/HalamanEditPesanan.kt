@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import project.roomsiswa.R
 import project.roomsiswa.model.EditViewModel
 import project.roomsiswa.model.PenyediaViewModel
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
 object ItemEditPesananDestination : DestinasiNavigasi {
     override val route = "item_edit_pesanan"
-    override val titleRes = R.string.edit_siswa
+    override val titleRes = R.string.title_edit_pesanan
     const val editIdArg = "itemId"
     val routeWithArgs = "$route/{$editIdArg}"
 }
@@ -33,7 +33,7 @@ fun ItemEditPesananScreen(
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
-            SiswaTopAppBar(
+            CafeTopAppBar(
                 title = stringResource(ItemEditPesananDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp

@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,64 +31,72 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import project.roomsiswa.R
-import project.roomsiswa.data.Siswa
-import project.roomsiswa.model.DetailSiswa
+import project.roomsiswa.data.Menu
 import project.roomsiswa.model.DetailsViewModel
-import project.roomsiswa.model.ItemDetailsUiState
+import project.roomsiswa.model.ItemDetailsMenuUiState
 import project.roomsiswa.model.PenyediaViewModel
-import project.roomsiswa.model.toSiswa
+import project.roomsiswa.model.toMenu
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
 import project.roomsiswa.navigasi.SiswaTopAppBar
 
-object DetailsDestination : DestinasiNavigasi {
-    override val route = "item_details"
-    override val titleRes = R.string.detail_siswa
-    const val siswaIdArg = "itemId"
-    val routeWithArgs = "$route/{$siswaIdArg}"
+object DetailsMenuDestination : DestinasiNavigasi {
+    override val route = "item_details_menu"
+    override val titleRes = R.string.title_detail_menu
+    const val detailIdArg = "itemId"
+    val routeWithArgs = "$route/{$detailIdArg}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(
+fun DetailsMenuScreen(
     navigateToEditItem: (Int) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailsViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: DetailsViewModel = viewModel(factory = PenyediaViewModel.Factory) /** -> Penyedia View Model */
 ){
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiStateMenu.collectAsState()
     val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SiswaTopAppBar(
-                title = stringResource(DetailsDestination.titleRes),
+            CafeTopAppBar(
+                title = stringResource(DetailsMenuDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToEditItem(uiState.value.detailSiswa.id) },
+                onClick = {
+                    uiState.value.detailMenu.idmenu?.let {
+                            id -> navigateToEditItem(id)
+                    }
+                },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large))
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(id = R.string.edit_siswa),
+                    contentDescription = stringResource(id = R.string.edit_menu),
                 )
             }
-        }, modifier = modifier
+        },
     ) { innerPadding ->
-        ItemDetailBody(
-            itemDetailsUiState = uiState.value,
+        ItemMenuDetailBody(
+            itemDetailsMenuUiState = uiState.value,
             onDelete = {
                 coroutineScope.launch {
-                    viewModel.deleteItem()
+                    viewModel.deleteMenuItem()
                     navigateBack()
                 }
             },
@@ -100,8 +109,8 @@ fun DetailsScreen(
 }
 
 @Composable
-private fun ItemDetailBody(
-    itemDetailsUiState: ItemDetailsUiState,
+private fun ItemMenuDetailBody(
+    itemDetailsMenuUiState: ItemDetailsMenuUiState,
     onDelete:() -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -110,10 +119,11 @@ private fun ItemDetailBody(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ) {
         var deleteConfirmationRequired by rememberSaveable{ mutableStateOf(false) }
-        ItemDetails(
-            siswa = itemDetailsUiState.detailSiswa.toSiswa(),
+        ItemMenuDetails(
+            menu = itemDetailsMenuUiState.detailMenu.toMenu(),
             modifier = Modifier.fillMaxWidth()
         )
+        /** Tombol Button */
         OutlinedButton(
             onClick = { deleteConfirmationRequired = true },
             shape = MaterialTheme.shapes.small,
@@ -122,7 +132,7 @@ private fun ItemDetailBody(
             Text(stringResource(id = R.string.delete))
         }
         if (deleteConfirmationRequired){
-            DeleteConfirmationDialog(
+            DeleteMenuConfirmationDialog(
                 onDeleteConfirm = {
                     deleteConfirmationRequired = false
                     onDelete()
@@ -137,8 +147,8 @@ private fun ItemDetailBody(
 }
 
 @Composable
-fun ItemDetails(
-    siswa: Siswa, modifier: Modifier =Modifier
+fun ItemMenuDetails(
+    menu : Menu, modifier: Modifier =Modifier
 ){
     Card(
         modifier = modifier,
@@ -153,23 +163,37 @@ fun ItemDetails(
                 .padding(dimensionResource(id = R.dimen.padding_medium)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
         ) {
-            ItemDetailsRow(
-                labelResID = R.string.nama,
-                itemDetail = siswa.nama,
+            ItemMenuDetailsRow(
+                labelResID = R.string.idmenu1,
+                itemDetail = menu.idmenu.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
-            ItemDetailsRow(
-                labelResID = R.string.alamat,
-                itemDetail = siswa.alamat,
+            ItemMenuDetailsRow(
+                labelResID = R.string.menu1,
+                itemDetail = menu.menu,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
             )
-            ItemDetailsRow(
-                labelResID = R.string.telpon,
-                itemDetail = siswa.telpon,
+            ItemMenuDetailsRow(
+                labelResID = R.string.harga1,
+                itemDetail = menu.harga,
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_medium)
+                )
+            )
+            ItemMenuDetailsRow(
+                labelResID = R.string.ketersediaan1,
+                itemDetail = menu.ketersediaan,
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_medium)
+                )
+            )
+            ItemMenuDetailsRow(
+                labelResID = R.string.kategori1,
+                itemDetail = menu.kategori,
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )
@@ -180,7 +204,7 @@ fun ItemDetails(
 }
 
 @Composable
-private  fun ItemDetailsRow(
+fun ItemMenuDetailsRow(
     @StringRes labelResID: Int, itemDetail: String, modifier: Modifier = Modifier
 ){
     Row (
@@ -193,7 +217,7 @@ private  fun ItemDetailsRow(
 }
 
 @Composable
-private fun DeleteConfirmationDialog(
+private fun DeleteMenuConfirmationDialog(
     onDeleteConfirm: () -> Unit,
     onDeleteCancel: () -> Unit,
     modifier: Modifier = Modifier

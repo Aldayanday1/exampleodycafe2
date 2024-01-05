@@ -20,33 +20,33 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import project.roomsiswa.R
-import project.roomsiswa.ui.halaman.DestinasiEntry
-import project.roomsiswa.ui.halaman.DestinasiHome
+import project.roomsiswa.ui.halaman.DestinasiMenu
+import project.roomsiswa.ui.halaman.DestinasiMenuEntry
 import project.roomsiswa.ui.halaman.DestinasiPesanan
 import project.roomsiswa.ui.halaman.DestinasiPesananEntry
 import project.roomsiswa.ui.halaman.DestinasiStart
-import project.roomsiswa.ui.halaman.DetailsDestination
+import project.roomsiswa.ui.halaman.DetailsMenuDestination
+import project.roomsiswa.ui.halaman.DetailsMenuScreen
 import project.roomsiswa.ui.halaman.DetailsPesananDestination
 import project.roomsiswa.ui.halaman.DetailsPesananScreen
-import project.roomsiswa.ui.halaman.DetailsScreen
+import project.roomsiswa.ui.halaman.EntryMenuScreen
 import project.roomsiswa.ui.halaman.EntryPesananScreen
-import project.roomsiswa.ui.halaman.EntrySiswaScreen
-import project.roomsiswa.ui.halaman.HomeScreen
-import project.roomsiswa.ui.halaman.ItemEditDestination
+import project.roomsiswa.ui.halaman.ItemEditMenuDestination
+import project.roomsiswa.ui.halaman.ItemEditMenuScreen
 import project.roomsiswa.ui.halaman.ItemEditPesananDestination
 import project.roomsiswa.ui.halaman.ItemEditPesananScreen
-import project.roomsiswa.ui.halaman.ItemEditScreen
+import project.roomsiswa.ui.halaman.MenuScreen
 import project.roomsiswa.ui.halaman.PesananScreen
 import project.roomsiswa.ui.halaman.StartScreen
 
 @Composable
-fun SiswaApp(navController: NavHostController = rememberNavController()){
+fun OdyCafeApp(navController: NavHostController = rememberNavController()){
     HostNavigasi(navController = navController)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SiswaTopAppBar(
+fun CafeTopAppBar(
     title: String,
     canNavigateBack: Boolean,
     modifier: Modifier = Modifier,
@@ -72,7 +72,6 @@ fun SiswaTopAppBar(
 @Composable
 fun HostNavigasi(
     navController: NavHostController,
-    modifier: Modifier = Modifier
 ){
     NavHost(
         navController = navController,
@@ -81,43 +80,48 @@ fun HostNavigasi(
     ) {
         composable(DestinasiStart.route){
             StartScreen (
-                onNextButtonMenuClicked = {navController.navigate(DestinasiHome.route)},
+                onNextButtonMenuClicked = {navController.navigate(DestinasiMenu.route)},
                 onNextButtonPesananClicked = {navController.navigate(DestinasiPesanan.route)},
             )
         }
 
         /* ------------- NAV MENU ------------ */
-        composable(DestinasiHome.route){
-            HomeScreen(
-                navigateToItemEntry = {navController.navigate(DestinasiEntry.route)},
+
+        composable(DestinasiMenu.route){
+            MenuScreen(
+                navigateToItemEntry = {navController.navigate(DestinasiMenuEntry.route)},
                 onDetailClick = {
-                    navController.navigate("${DetailsDestination.route}/$it")
+                    navController.navigate("${DetailsMenuDestination.route}/$it")
                 },
             )
         }
-        composable(DestinasiEntry.route){
-            EntrySiswaScreen(navigateBack = { navController.popBackStack()}, modifier = Modifier)
+        composable(DestinasiMenuEntry.route){
+            EntryMenuScreen(
+                navigateBack = { navController.popBackStack()},
+                onNavigateUp = { navController.navigateUp() },
+                modifier = Modifier
+            )
         }
         composable(
-            DetailsDestination.routeWithArgs,
-            arguments = listOf(navArgument(DetailsDestination.siswaIdArg) {
+            DetailsMenuDestination.routeWithArgs,
+            arguments = listOf(navArgument(DetailsMenuDestination.detailIdArg) {
                 type = NavType.IntType
             })
         ) {
-            DetailsScreen(
+            DetailsMenuScreen(
                 navigateBack = { navController.popBackStack() },
                 navigateToEditItem = {
-                    navController.navigate("${ItemEditDestination.route}/$it")
+                    navController.navigate("${ItemEditMenuDestination.route}/$it")
                 }
             )
         }
         composable(
-            ItemEditDestination.routeWithArgs,
-            arguments = listOf(navArgument(ItemEditDestination.itemIdArg) {
+            ItemEditMenuDestination.routeWithArgs,
+            arguments = listOf(navArgument(ItemEditMenuDestination.editIdArg) {
                 type = NavType.IntType
             })
         ) {
-            ItemEditScreen(
+            ItemEditMenuScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
             )

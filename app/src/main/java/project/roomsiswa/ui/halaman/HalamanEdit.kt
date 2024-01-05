@@ -12,19 +12,19 @@ import kotlinx.coroutines.launch
 import project.roomsiswa.R
 import project.roomsiswa.model.EditViewModel
 import project.roomsiswa.model.PenyediaViewModel
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
-object ItemEditDestination : DestinasiNavigasi {
-    override val route = "item_edit"
-    override val titleRes = R.string.edit_siswa
-    const val itemIdArg = "itemId"
-    val routeWithArgs = "$route/{$itemIdArg}"
+object ItemEditMenuDestination : DestinasiNavigasi {
+    override val route = "item_edit_menu"
+    override val titleRes = R.string.title_edit_menu
+    const val editIdArg = "itemId"
+    val routeWithArgs = "$route/{$editIdArg}"
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemEditScreen(
+fun ItemEditMenuScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
@@ -33,20 +33,20 @@ fun ItemEditScreen(
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
-            SiswaTopAppBar(
-                title = stringResource(ItemEditDestination.titleRes),
+            CafeTopAppBar(
+                title = stringResource(ItemEditMenuDestination.titleRes),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
         },
         modifier = modifier
     ) { innerPadding ->
-        EntrySiswaBody(
-            uiStateSiswa = viewModel.siswaUiState,
-            onSiswaValueChange = viewModel::updateUiState,
+        EntryMenuBody(
+            uiStateMenu = viewModel.menuUiState,
+            onMenuValueChange = viewModel::updateUiStateMenu,
             onSaveClick = {
                 coroutineScope.launch {
-                    viewModel.updateSiswa()
+                    viewModel.updateMenu()
                     navigateBack()
                 }
             },
@@ -54,4 +54,5 @@ fun ItemEditScreen(
         )
     }
 }
+
 

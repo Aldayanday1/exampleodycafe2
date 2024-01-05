@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -30,12 +31,12 @@ import project.roomsiswa.model.DetailPesanan
 import project.roomsiswa.model.EntryViewModel
 import project.roomsiswa.model.PenyediaViewModel
 import project.roomsiswa.model.UIStatePesanan
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
 object DestinasiPesananEntry: DestinasiNavigasi {
     override val route = "item_entry_pesanan"
-    override val titleRes = R.string.idpesanan
+    override val titleRes = R.string.title_entry_pesanan
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,32 +50,32 @@ fun EntryPesananScreen(
     val coroutinScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-//    val menuId = viewModel.uiStatePesanan.detailPesanan.idmenuforeignkey ?: 0
-//
-//    val menu = viewModel.getRepositoriMenu().getMenuStream(menuId).collectAsState(initial = null).value
-//
-//    val showErrorDialog = menu == null
-//
-//    if (showErrorDialog) {
-//        // Menampilkan pesan kesalahan jika data Menu kosong
-//        // Misalnya dengan menggunakan AlertDialog atau Snackbar
-//        // Contoh:
-//        AlertDialog(
-//            onDismissRequest = { /* Dismiss alert dialog */ },
-//            title = { Text("Maaf") },
-//            text = { Text("Data Menu kosong") },
-//            confirmButton = {
-//                Button(onClick = { /* Dismiss alert dialog */ }) {
-//                    Text("OK")
-//                }
-//            }
-//        )
-//    }
+    val menuId = viewModel.uiStatePesanan.detailPesanan.idmenuforeignkey ?: 0
+
+    val menu = viewModel.getRepositoriMenu().getMenuStream(menuId).collectAsState(initial = null).value
+
+    val showErrorDialog = menu == null
+
+    if (showErrorDialog) {
+        // Menampilkan pesan kesalahan jika data Menu kosong
+        // Misalnya dengan menggunakan AlertDialog atau Snackbar
+        // Contoh:
+        AlertDialog(
+            onDismissRequest = { /* Dismiss alert dialog */ },
+            title = { Text("Maaf") },
+            text = { Text("Data Menu kosong") },
+            confirmButton = {
+                Button(onClick = { /* Dismiss alert dialog */ }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SiswaTopAppBar(
+            CafeTopAppBar(
                 title = stringResource(DestinasiPesananEntry.titleRes),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp,
@@ -138,7 +139,6 @@ fun FormInputPesanan(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
-        /** OutlinedTextField memerlukan String sbg nilai value*/
         /** OutlinedTextField memerlukan String sbg nilai value*/
         OutlinedTextField(
             value = detailPesanan.idpesanan?.toString() ?: "",
