@@ -16,13 +16,13 @@
     <string name="kategori1">Kategori  :</string>
 
     // PESANAN
-    <string name="idpesanan">ID Pesanan*</string>
+    <string name="idpesanan">Jumlah*</string>
     <string name="nama">Nama Pembeli*</string>
     <string name="detail">Detail Pembelian*</string>
     <string name="metode">Metode Pembayaran*</string>
     <string name="tanggal">Tanggal Transaksi*</string>
 
-    <string name="idpesanan1">ID Pesanan :</string>
+    <string name="idpesanan1">Jumlah :</string>
     <string name="nama1">Nama Pembeli :</string>
     <string name="detail1">Detail Pembelian :</string>
     <string name="metode1">Metode Pembayaran :</string>

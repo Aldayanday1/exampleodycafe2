@@ -87,7 +87,7 @@ fun StartScreen(
                             contentColor = Color.White.copy(alpha = 0.8f)
                         )
                     ) {
-                        Text(stringResource(R.string.idpesanan), color = Color.DarkGray)
+                        Text(stringResource(R.string.nav_menu), color = Color.DarkGray)
                     }
                     Button(
                         modifier = Modifier
@@ -101,7 +101,7 @@ fun StartScreen(
                             /** Menambah transparansi*/
                         )
                     ) {
-                        Text(stringResource(R.string.menu), color = Color.DarkGray)
+                        Text(stringResource(R.string.nav_pesanan), color = Color.DarkGray)
                     }
                 }
             }

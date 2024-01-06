@@ -1,14 +1,23 @@
 package project.roomsiswa.ui.halaman
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -16,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -197,34 +208,44 @@ fun FormInputPesanan(
 //        )
 
         var expanded by remember { mutableStateOf(false) }
-        val selectedMenuId = detailPesanan.idmenuforeignkey
+        var selectedMenu: String? by remember { mutableStateOf(null) } // Menggunakan tipe data String nullable untuk menunjukkan pilihan yang kosong
 
-        OutlinedTextField(
-            value = selectedMenuId?.toString() ?: "",
-            onValueChange = {}, // Disable text input
-            label = { Text(text = stringResource(R.string.menu)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            trailingIcon = {
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    // Gunakan daftar menuItems untuk mempopulasi DropdownMenuItem
-                    for (menuItem in menuItems) {
-                        DropdownMenuItem(
-                            onClick = {
-                                // Perbarui selectedMenuId dan tutup dropdown
-                                onValueChange(detailPesanan.copy(idmenuforeignkey = menuItem.idmenu))
-                                expanded = false
-                            },
-                            text = { Text(text = menuItem.menu) }
-                        )
-                    }
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = !expanded }
+                    .border(1.dp, Color.Black, shape = RoundedCornerShape(4.dp))
+            ) {
+                Text(
+                    text = selectedMenu ?: "Select Menu",
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.width(380.dp),
+            ) {
+                for (menuItem in menuItems) {
+                    DropdownMenuItem(
+                        onClick = {
+                            // Perbarui selectedMenu dan tutup dropdown
+                            selectedMenu = menuItem.menu
+                            expanded = false
+                            onValueChange(detailPesanan.copy(idmenuforeignkey = selectedMenu ?: ""))
+                        },
+                        text = { Text(text = menuItem.menu) }
+                    )
                 }
             }
-        )
+        }
+
+
+
 
         if (enabled){
             Text(

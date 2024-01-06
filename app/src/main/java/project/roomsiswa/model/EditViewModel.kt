@@ -83,7 +83,7 @@ class EditViewModel(
     private fun validasiInputPesanan(uiState: DetailPesanan = pesananUiState.detailPesanan, menuItems: List<Menu>): Boolean {
         return with(uiState) {
             idpesanan != 0 && nama.isNotBlank() && detail.isNotBlank() && metode.isNotBlank() && tanggal.isNotBlank()
-                    && menuItems.any { it.idmenu == idmenuforeignkey }
+                    && menuItems.any { it.menu == idmenuforeignkey }
         }
     }
 

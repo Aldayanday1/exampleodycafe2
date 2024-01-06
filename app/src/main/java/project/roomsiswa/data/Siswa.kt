@@ -14,7 +14,10 @@ import androidx.room.PrimaryKey
 //    val telpon : String
 //)
 
-@Entity(tableName = "tblMenu")
+@Entity(
+    tableName = "tblMenu",
+    indices = [Index(value = ["menu"], unique = true)] // Menambahkan indeks unik pada kolom menu
+)
 data class Menu(
     @PrimaryKey
     val idmenu : Int,
@@ -24,12 +27,13 @@ data class Menu(
     val kategori : String,
 )
 
+
 @Entity(
     tableName = "tblPesanan",
     foreignKeys = [ForeignKey(
         // foreign key nya diambil dari data class Menu
         entity = Menu::class,
-        parentColumns = ["idmenu"],
+        parentColumns = ["menu"],
         childColumns = ["idMenuForeignKey"],
         onDelete = ForeignKey.CASCADE
     )],
@@ -43,5 +47,5 @@ data class Pesanan(
     val detail : String,
     val metode : String,
     val tanggal : String,
-    val idMenuForeignKey: Int // Foreign key reference to idmenu from Menu
+    val idMenuForeignKey: String // Foreign key reference to idmenu from Menu
 )

@@ -58,7 +58,7 @@ class EntryViewModel(
     private fun validasiInputPesanan(uiState: DetailPesanan = uiStatePesanan.detailPesanan, menuItems: List<Menu>): Boolean {
         return with(uiState) {
             idpesanan != 0 && nama.isNotBlank() && detail.isNotBlank() && metode.isNotBlank() && tanggal.isNotBlank() &&
-                    menuItems.any { it.idmenu == idmenuforeignkey }
+                    menuItems.any { it.menu == idmenuforeignkey }
         }
     }
 
@@ -151,7 +151,7 @@ data class DetailPesanan(
     val detail: String = "",
     val metode: String = "",
     val tanggal: String = "",
-    val idmenuforeignkey: Int? = null,
+    val idmenuforeignkey: String = "",
 )
 
 // Fungsi untuk mengkonversi data input ke data dalam tabel Pesanan
@@ -161,7 +161,7 @@ fun DetailPesanan.toPesanan(): Pesanan = Pesanan(
     detail = detail,
     metode = metode,
     tanggal = tanggal,
-    idMenuForeignKey = idmenuforeignkey ?: 0, // Sesuaikan dengan nilai yang diinginkan
+    idMenuForeignKey = idmenuforeignkey, // Sesuaikan dengan nilai yang diinginkan
 )
 
 // Fungsi untuk mengubah Pesanan menjadi UIStatePesanan
