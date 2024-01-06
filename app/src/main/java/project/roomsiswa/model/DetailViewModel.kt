@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import project.roomsiswa.repositori.RepositoriMenu
 import project.roomsiswa.repositori.RepositoriPesanan
-import project.roomsiswa.ui.halaman.DetailsDestination
+import project.roomsiswa.ui.halaman.DetailsMenuDestination
 
 class DetailsViewModel (
     savedStateHandle: SavedStateHandle,

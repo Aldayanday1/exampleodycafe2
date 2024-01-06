@@ -7,10 +7,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -18,15 +19,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import project.roomsiswa.R
+import project.roomsiswa.data.Menu
 import project.roomsiswa.model.DetailPesanan
 import project.roomsiswa.model.EntryViewModel
 import project.roomsiswa.model.PenyediaViewModel
@@ -50,27 +57,8 @@ fun EntryPesananScreen(
     val coroutinScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    val menuId = viewModel.uiStatePesanan.detailPesanan.idmenuforeignkey ?: 0
-
-    val menu = viewModel.getRepositoriMenu().getMenuStream(menuId).collectAsState(initial = null).value
-
-    val showErrorDialog = menu == null
-
-    if (showErrorDialog) {
-        // Menampilkan pesan kesalahan jika data Menu kosong
-        // Misalnya dengan menggunakan AlertDialog atau Snackbar
-        // Contoh:
-        AlertDialog(
-            onDismissRequest = { /* Dismiss alert dialog */ },
-            title = { Text("Maaf") },
-            text = { Text("Data Menu kosong") },
-            confirmButton = {
-                Button(onClick = { /* Dismiss alert dialog */ }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
+    // Mendapatkan daftar menu dari ViewModel
+    val menuItems by viewModel.menuItems.collectAsState()
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -85,13 +73,14 @@ fun EntryPesananScreen(
     ){ innerPadding ->
         EntryPesananBody(
             uiStatePesanan = viewModel.uiStatePesanan,
-            onPesananValueChange = viewModel::updateUiStatePesanan,
+            onPesananValueChange = { detailPesanan -> viewModel.updateUiStatePesanan(detailPesanan, menuItems) },
             onSaveClick = {
                 coroutinScope.launch {
-                    viewModel.savePesanan()
+                    viewModel.savePesanan(menuItems)
                     navigateBack()
                 }
             },
+            menuItems = menuItems, // Menggunakan menuItems dari parameter
             modifier = Modifier
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
@@ -105,6 +94,7 @@ fun EntryPesananBody(
     uiStatePesanan: UIStatePesanan,
     onPesananValueChange: (DetailPesanan) -> Unit,
     onSaveClick: () -> Unit,
+    menuItems: List<Menu>,
     modifier: Modifier = Modifier
 ){
     Column (
@@ -114,7 +104,8 @@ fun EntryPesananBody(
         FormInputPesanan(
             detailPesanan = uiStatePesanan.detailPesanan,
             onValueChange = onPesananValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            menuItems = menuItems // Menggunakan menuItems dari parameter
         )
         Button(
             onClick = onSaveClick,
@@ -133,12 +124,15 @@ fun FormInputPesanan(
     detailPesanan: DetailPesanan,
     modifier: Modifier = Modifier,
     onValueChange: (DetailPesanan) -> Unit = {},
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    menuItems: List<Menu>, // Tambahkan parameter untuk menampung daftar menu
 ){
     Column (
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
+
+
         /** OutlinedTextField memerlukan String sbg nilai value*/
         OutlinedTextField(
             value = detailPesanan.idpesanan?.toString() ?: "",
@@ -187,19 +181,49 @@ fun FormInputPesanan(
             enabled = enabled,
             singleLine = true
         )
+//        OutlinedTextField(
+//            value = detailPesanan.idmenuforeignkey?.toString() ?: "",
+//            onValueChange = {
+//                onValueChange(
+//                    if (it.isEmpty()) detailPesanan.copy(idmenuforeignkey = null)
+//                    else detailPesanan.copy(idmenuforeignkey = it.toIntOrNull())
+//                )
+//            },
+//            label = { Text(stringResource(R.string.menu)) },
+//            modifier = Modifier.fillMaxWidth(),
+//            enabled = enabled,
+//            singleLine = true,
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+//        )
+
+        var expanded by remember { mutableStateOf(false) }
+        val selectedMenuId = detailPesanan.idmenuforeignkey
+
         OutlinedTextField(
-            value = detailPesanan.idmenuforeignkey?.toString() ?: "",
-            onValueChange = {
-                onValueChange(
-                    if (it.isEmpty()) detailPesanan.copy(idmenuforeignkey = null)
-                    else detailPesanan.copy(idmenuforeignkey = it.toIntOrNull())
-                )
-            },
-            label = { Text(stringResource(R.string.menu)) },
+            value = selectedMenuId?.toString() ?: "",
+            onValueChange = {}, // Disable text input
+            label = { Text(text = stringResource(R.string.menu)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            trailingIcon = {
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    // Gunakan daftar menuItems untuk mempopulasi DropdownMenuItem
+                    for (menuItem in menuItems) {
+                        DropdownMenuItem(
+                            onClick = {
+                                // Perbarui selectedMenuId dan tutup dropdown
+                                onValueChange(detailPesanan.copy(idmenuforeignkey = menuItem.idmenu))
+                                expanded = false
+                            },
+                            text = { Text(text = menuItem.menu) }
+                        )
+                    }
+                }
+            }
         )
 
         if (enabled){
@@ -212,5 +236,6 @@ fun FormInputPesanan(
             thickness = dimensionResource(R.dimen.padding_small),
             modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
         )
+
     }
 }

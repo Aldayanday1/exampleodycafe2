@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import project.roomsiswa.navigasi.SiswaApp
+import project.roomsiswa.navigasi.OdyCafeApp
 import project.roomsiswa.ui.theme.RoomSiswaTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SiswaApp()
+                    OdyCafeApp()
                 }
             }
         }

@@ -5,7 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import project.roomsiswa.data.Menu
 import project.roomsiswa.data.Pesanan
 import project.roomsiswa.repositori.RepositoriMenu
@@ -51,42 +55,47 @@ class EntryViewModel(
         private set
 
     /* Fungsi untuk memvalidasi input Pesanan */
-    private fun validasiInputPesanan(uiState: DetailPesanan = uiStatePesanan.detailPesanan): Boolean {
+    private fun validasiInputPesanan(uiState: DetailPesanan = uiStatePesanan.detailPesanan, menuItems: List<Menu>): Boolean {
         return with(uiState) {
-            idpesanan != 0 && nama.isNotBlank() && detail.isNotBlank() && metode.isNotBlank() && tanggal.isNotBlank() && idmenuforeignkey != 0
+            idpesanan != 0 && nama.isNotBlank() && detail.isNotBlank() && metode.isNotBlank() && tanggal.isNotBlank() &&
+                    menuItems.any { it.idmenu == idmenuforeignkey }
         }
     }
 
-    fun updateUiStatePesanan(detailPesanan: DetailPesanan) {
+    fun updateUiStatePesanan(detailPesanan: DetailPesanan, menuItems: List<Menu>) {
         uiStatePesanan = UIStatePesanan(
             detailPesanan = detailPesanan,
-            isEntryValid = validasiInputPesanan(detailPesanan)
+            isEntryValid = validasiInputPesanan(detailPesanan, menuItems)
         )
     }
 
     // insert Pesanan
-    suspend fun savePesanan() {
-        if (validasiInputPesanan()) {
+    suspend fun savePesanan(menuItems: List<Menu>) {
+        if (validasiInputPesanan(menuItems = menuItems)) {
             repositoriPesanan.insertPesanan(uiStatePesanan.detailPesanan.toPesanan())
         }
     }
-    fun getRepositoriMenu(): RepositoriMenu {
-        return repositoriMenu
-    }
-    suspend fun populateIdMenuForeignKey(menuId: Int) {
-        val menu = repositoriMenu.getMenuStream(menuId).firstOrNull()
-        menu?.let {
-            val detailPesanan = uiStatePesanan.detailPesanan.copy(idmenuforeignkey = it.idmenu)
-            updateUiStatePesanan(detailPesanan)
-        } ?: run {
-            // Handle jika data dari idmenu tidak tersedia
-            // Misalnya, menampilkan pesan error
-            // Munculkan pesan alert atau ubah status untuk menunjukkan bahwa data kosong
-            // Misalnya, dengan mengubah isEntryValid di UIStatePesanan menjadi false
-            uiStatePesanan = UIStatePesanan(isEntryValid = false)
-        }
+
+    /*--------DROPDOWN--------*/
+
+    // Properti untuk daftar menu
+    private val _menuItems = MutableStateFlow<List<Menu>>(emptyList())
+    val menuItems: StateFlow<List<Menu>> = _menuItems
+
+    init {
+        // Panggil fungsi untuk mendapatkan daftar menu dari repositori
+        getAllMenu()
     }
 
+    // Fungsi untuk mendapatkan daftar menu dari repositori
+    private fun getAllMenu() {
+        viewModelScope.launch {
+            repositoriMenu.getAllMenuStream().collect { menuList ->
+                // Update daftar menu saat data berubah
+                _menuItems.value = menuList
+            }
+        }
+    }
 
 }
 

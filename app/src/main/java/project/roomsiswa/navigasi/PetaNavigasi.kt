@@ -141,7 +141,8 @@ fun HostNavigasi(
             EntryPesananScreen(
                 navigateBack = { navController.popBackStack()},
                 onNavigateUp = { navController.navigateUp() },
-                modifier = Modifier
+                modifier = Modifier,
+
             )
         }
         composable(

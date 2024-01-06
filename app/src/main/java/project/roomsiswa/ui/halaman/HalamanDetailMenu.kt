@@ -45,7 +45,6 @@ import project.roomsiswa.model.PenyediaViewModel
 import project.roomsiswa.model.toMenu
 import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
-import project.roomsiswa.navigasi.SiswaTopAppBar
 
 object DetailsMenuDestination : DestinasiNavigasi {
     override val route = "item_details_menu"
