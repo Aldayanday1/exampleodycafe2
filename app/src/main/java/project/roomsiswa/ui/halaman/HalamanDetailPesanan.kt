@@ -177,6 +177,13 @@ fun ItemPesananDetails(
                 )
             )
             ItemPesananDetailsRow(
+                labelResID = R.string.idmenu1,
+                itemDetail = pesanan.idMenuForeignKey.toString(),
+                modifier = Modifier.padding(
+                    horizontal = dimensionResource(id = R.dimen.padding_medium)
+                )
+            )
+            ItemPesananDetailsRow(
                 labelResID = R.string.detail1,
                 itemDetail = pesanan.detail,
                 modifier = Modifier.padding(
@@ -193,13 +200,6 @@ fun ItemPesananDetails(
             ItemPesananDetailsRow(
                 labelResID = R.string.tanggal1,
                 itemDetail = pesanan.tanggal,
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(id = R.dimen.padding_medium)
-                )
-            )
-            ItemPesananDetailsRow(
-                labelResID = R.string.idmenu1,
-                itemDetail = pesanan.idMenuForeignKey.toString(),
                 modifier = Modifier.padding(
                     horizontal = dimensionResource(id = R.dimen.padding_medium)
                 )

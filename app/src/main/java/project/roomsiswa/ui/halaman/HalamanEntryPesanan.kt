@@ -142,9 +142,15 @@ fun FormInputPesanan(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
     ){
-
-
         /** OutlinedTextField memerlukan String sbg nilai value*/
+        OutlinedTextField(
+            value = detailPesanan.nama,
+            onValueChange = {onValueChange(detailPesanan.copy(nama = it)) },
+            label = { Text(stringResource(R.string.nama)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
         OutlinedTextField(
             value = detailPesanan.idpesanan?.toString() ?: "",
             onValueChange = {
@@ -160,52 +166,8 @@ fun FormInputPesanan(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        OutlinedTextField(
-            value = detailPesanan.nama,
-            onValueChange = {onValueChange(detailPesanan.copy(nama = it)) },
-            label = { Text(stringResource(R.string.nama)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailPesanan.detail,
-            onValueChange = {onValueChange(detailPesanan.copy(detail = it)) },
-            label = { Text(stringResource(R.string.detail)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailPesanan.metode,
-            onValueChange = {onValueChange(detailPesanan.copy(metode = it)) },
-            label = { Text(text = stringResource(R.string.metode)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailPesanan.tanggal,
-            onValueChange = {onValueChange(detailPesanan.copy(tanggal = it)) },
-            label = { Text(text = stringResource(R.string.tanggal)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-//        OutlinedTextField(
-//            value = detailPesanan.idmenuforeignkey?.toString() ?: "",
-//            onValueChange = {
-//                onValueChange(
-//                    if (it.isEmpty()) detailPesanan.copy(idmenuforeignkey = null)
-//                    else detailPesanan.copy(idmenuforeignkey = it.toIntOrNull())
-//                )
-//            },
-//            label = { Text(stringResource(R.string.menu)) },
-//            modifier = Modifier.fillMaxWidth(),
-//            enabled = enabled,
-//            singleLine = true,
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-//        )
+
+        Divider()
 
         var expanded by remember { mutableStateOf(false) }
         var selectedMenu: String? by remember { mutableStateOf(null) } // Menggunakan tipe data String nullable untuk menunjukkan pilihan yang kosong
@@ -243,8 +205,30 @@ fun FormInputPesanan(
                 }
             }
         }
-
-
+        OutlinedTextField(
+            value = detailPesanan.detail,
+            onValueChange = {onValueChange(detailPesanan.copy(detail = it)) },
+            label = { Text(stringResource(R.string.detail)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = detailPesanan.metode,
+            onValueChange = {onValueChange(detailPesanan.copy(metode = it)) },
+            label = { Text(text = stringResource(R.string.metode)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
+        OutlinedTextField(
+            value = detailPesanan.tanggal,
+            onValueChange = {onValueChange(detailPesanan.copy(tanggal = it)) },
+            label = { Text(text = stringResource(R.string.tanggal)) },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true
+        )
 
 
         if (enabled){

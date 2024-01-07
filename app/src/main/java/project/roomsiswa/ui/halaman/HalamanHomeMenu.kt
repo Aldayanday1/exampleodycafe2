@@ -1,7 +1,9 @@
 package project.roomsiswa.ui.halaman
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,8 +34,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,13 +89,23 @@ fun MenuScreen(
     ){
             innerPadding ->
         val uiStateMenu by viewModel.menuUiState.collectAsState()
-        BodyMenu(
-            itemMenu = uiStateMenu.listMenu,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            onMenuClick = onDetailClick
-        )
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.esteh),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+            )
+
+            BodyMenu(
+                itemMenu = uiStateMenu.listMenu,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                onMenuClick = onDetailClick
+            )
+        }
     }
 }
 
@@ -152,12 +167,13 @@ fun DataMenu(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ){
         Column (
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large)),
+            modifier = Modifier
+                .padding(dimensionResource(id = R.dimen.padding_Large))
+                .width(300.dp)
+                .height(250.dp), // Atur transparansi,
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
         ){
-            Row (
-                modifier = Modifier.fillMaxSize()
-            ){
+            Row {
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = null,

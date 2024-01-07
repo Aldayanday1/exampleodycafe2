@@ -61,6 +61,6 @@ interface PesananDao {
 
     @Query("SELECT * from tblPesanan WHERE idpesanan = :idpesanan")
     fun getPesanan(idpesanan: Int): Flow<Pesanan>
-    @Query("SELECT * from tblPesanan ORDER BY nama ASC")
+    @Query("SELECT * from tblPesanan ORDER BY idpesanan ASC")
     fun getAllPesanan(): Flow<List<Pesanan>>
 }

@@ -1,13 +1,18 @@
 package project.roomsiswa.ui.halaman
 
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,7 +21,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,8 +39,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,27 +80,60 @@ fun PesananScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToItemEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_Large)),
+                horizontalAlignment = Alignment.CenterHorizontally
             ){
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.entry_pesanan)
-                )
+                Row(
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large))
+                ) {
+                    FloatingActionButton(
+                        onClick = navigateToItemEntry,
+                        shape = MaterialTheme.shapes.medium,
+                        modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.entry_pesanan)
+                        )
+                    }
+                    FloatingActionButton(
+                        onClick = navigateToItemEntry,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = stringResource(R.string.entry_pesanan)
+                        )
+                    }
+                }
             }
+
         },
     ){
             innerPadding ->
         val uiStatePesanan by viewModel.pesananUiState.collectAsState()
-        BodyPesanan(
-            itemPesanan = uiStatePesanan.listPesanan,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            onPesananClick = onDetailClick
-        )
+
+        // Menambahkan BoxWithConstraints di dalam Scaffold
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.esteh),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+            )
+
+            // Memasukkan konten utama (BodyPesanan) di atas latar belakang
+            BodyPesanan(
+                itemPesanan = uiStatePesanan.listPesanan,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+                onPesananClick = onDetailClick
+            )
+        }
     }
 }
 
@@ -146,132 +189,133 @@ fun ListPesanan(
 fun DataPesanan(
     pesanan: Pesanan,
     modifier: Modifier = Modifier
-){
-    Card (
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ){
-        Column (
+) {
+    Card(
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .size(width = 350.dp, height = 305.dp)
+            .alpha(0.8f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    ) {
+        Column(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
-        ){
-            Row (
-                modifier = Modifier.fillMaxSize()
-            ){
+        ) {
+            Row {
                 Icon(
-                    imageVector = Icons.Default.Star,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.idpesanan1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = pesanan.idpesanan.toString(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.Face,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.nama1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = pesanan.nama,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.Info,
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
+                Text(
+                    text = stringResource(id = R.string.nav_menu),
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
+                Text(
+                    text = pesanan.idMenuForeignKey.toString(),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
+            Row {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.detail1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = pesanan.detail,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.CheckCircle ,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.metode1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = pesanan.metode,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder ,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.tanggal1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = pesanan.tanggal,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Row (
-                modifier = Modifier.fillMaxSize()
-            ){
-                Icon(
-                    imageVector = Icons.Default.Star,
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
-                Text(
-                    text = stringResource(id = R.string.idmenu1),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f)
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
-                Text(
-                    text = pesanan.idMenuForeignKey.toString(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
         }
     }
 }
+
 
