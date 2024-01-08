@@ -43,8 +43,8 @@
     <string name="nav_pesanan">Pesanan</string>
 
     // TITLE RES
-    <string name="welcome_menu">Welcome to Menu Page!</string>
-    <string name="welcome_pesanan">Welcome to Pesanan Page!</string>
+    <string name="welcome_menu">List Menu</string>
+    <string name="welcome_pesanan">List Pesanan</string>
 
     <string name="title_entry_menu">Entry Menu</string>
     <string name="title_edit_menu">Edit Menu</string>
@@ -54,7 +54,7 @@
     <string name="title_edit_pesanan">Edit Pesanan</string>
     <string name="title_detail_pesanan">Detail Pesanan</string>
 
-    <string name="deskripsi_no_item">Ups, Sorry :( Data Kosong</string>
+    <string name="deskripsi_no_item">Maaf Pesanan Kosong :(</string>
     <string name="required_field">Required Fields!</string>
     <string name="btn_submit">Submit</string>
     <string name="back">Back</string>

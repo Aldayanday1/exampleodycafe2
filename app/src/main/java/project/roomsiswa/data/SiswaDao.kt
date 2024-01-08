@@ -31,7 +31,7 @@ interface MenuDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(menu: Menu)
 
-    @Update
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun update(menu: Menu)
 
     @Delete

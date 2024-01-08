@@ -1,9 +1,13 @@
 package project.roomsiswa.ui.halaman
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
@@ -37,16 +42,22 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import project.roomsiswa.R
 import project.roomsiswa.data.Pesanan
@@ -64,8 +75,10 @@ object DestinasiPesanan : DestinasiNavigasi {
 @Composable
 fun PesananScreen(
     navigateToItemEntry: () -> Unit,
-    modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
+    navigateBack: () -> Unit,
+    navigateToHome: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -75,8 +88,10 @@ fun PesananScreen(
         topBar = {
             CafeTopAppBar(
                 title = stringResource(DestinasiPesanan.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
+                canNavigateBack = true,
+                navigateUp = navigateBack,
+                scrollBehavior = scrollBehavior,
+                modifier = Modifier.alpha(0.5f),
             )
         },
         floatingActionButton = {
@@ -84,30 +99,37 @@ fun PesananScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_Large)),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.End
             ){
                 Row(
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large))
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_Large))
+                        .alpha(0.8f),
                 ) {
                     FloatingActionButton(
-                        onClick = navigateToItemEntry,
-                        shape = MaterialTheme.shapes.medium,
-                        modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.entry_pesanan)
-                        )
-                    }
-                    FloatingActionButton(
-                        onClick = navigateToItemEntry,
+                        onClick = navigateToHome,
                         shape = MaterialTheme.shapes.medium
                     ) {
                         Icon(
                             imageVector = Icons.Default.Home,
                             contentDescription = stringResource(R.string.entry_pesanan)
                         )
+
                     }
+
+                    Spacer(modifier = Modifier.padding(end = 10.dp))
+
+                    FloatingActionButton(
+                        onClick = navigateToItemEntry,
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.entry_pesanan)
+                        )
+                    }
+
+
                 }
             }
 
@@ -133,6 +155,39 @@ fun PesananScreen(
                     .fillMaxSize(),
                 onPesananClick = onDetailClick
             )
+
+//            Column(
+//                modifier = Modifier
+//                    .padding(top = 100.dp)
+//                    .align(Alignment.TopCenter),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Row(
+//                    modifier = Modifier
+//                        .padding(dimensionResource(id = R.dimen.padding_Large))
+//                        .alpha(0.8f),
+//                ) {
+//                    FloatingActionButton(
+//                        onClick = navigateToItemEntry,
+//                        shape = MaterialTheme.shapes.medium,
+//                        modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Add,
+//                            contentDescription = stringResource(R.string.entry_pesanan)
+//                        )
+//                    }
+//                    FloatingActionButton(
+//                        onClick = navigateToItemEntry,
+//                        shape = MaterialTheme.shapes.medium
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Home,
+//                            contentDescription = stringResource(R.string.entry_pesanan)
+//                        )
+//                    }
+//                }
+//            }
         }
     }
 }
@@ -143,28 +198,51 @@ fun BodyPesanan(
     modifier: Modifier = Modifier,
     onPesananClick: (Int) -> Unit = {}
 ){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
     ){
         if (itemPesanan.isEmpty()) {
-            /** kalau list data kosong, makan muncul teks ini*/
-            Text(
-                text = stringResource(R.string.deskripsi_no_item),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
-            /** kalau ada isi data nya muncul = list pesanan*/
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .alpha(0.8f)
+                    .padding(bottom = 150.dp)
+            ){
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
+                        .clip(CircleShape)
+                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.odycafe),
+                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                Spacer(modifier = Modifier.padding(top = 35.dp))
+                Text(
+                    text = stringResource(R.string.deskripsi_no_item),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontSize = 25.sp,
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
+                )
+            }
         } else {
             ListPesanan(
                 itemPesanan = itemPesanan,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                onItemPesananClick = {onPesananClick(it.idpesanan)
-                }
+                onItemPesananClick = { onPesananClick(it.idpesanan) }
             )
         }
     }
 }
+
 
 @Composable
 fun ListPesanan(

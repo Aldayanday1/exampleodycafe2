@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,7 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
@@ -59,8 +63,10 @@ object DestinasiMenu : DestinasiNavigasi{
 @Composable
 fun MenuScreen(
     navigateToItemEntry: () -> Unit,
-    modifier: Modifier = Modifier,
     onDetailClick: (Int) -> Unit = {},
+    navigateBack: () -> Unit,
+    navigateToHome: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -70,21 +76,51 @@ fun MenuScreen(
         topBar = {
             CafeTopAppBar(
                 title = stringResource(DestinasiMenu.titleRes),
-                canNavigateBack = false,
-                scrollBehavior = scrollBehavior
+                canNavigateBack = true,
+                navigateUp = navigateBack,
+                scrollBehavior = scrollBehavior,
+                modifier = Modifier.alpha(0.5f),
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToItemEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_Large)),
+                horizontalAlignment = Alignment.End
             ){
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.entry_menu)
-                )
+                Row(
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.padding_Large))
+                        .alpha(0.8f),
+                ) {
+                    FloatingActionButton(
+                        onClick = navigateToHome,
+                        shape = MaterialTheme.shapes.medium
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = stringResource(R.string.entry_pesanan)
+                        )
+
+                    }
+
+                    Spacer(modifier = Modifier.padding(end = 10.dp))
+
+                    FloatingActionButton(
+                        onClick = navigateToItemEntry,
+                        shape = MaterialTheme.shapes.medium,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.entry_pesanan)
+                        )
+                    }
+
+
+                }
             }
+
         },
     ){
             innerPadding ->
@@ -117,6 +153,7 @@ fun BodyMenu(
 ){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
     ){
         if (itemMenu.isEmpty()) {
@@ -163,107 +200,107 @@ fun DataMenu(
     modifier: Modifier = Modifier
 ){
     Card (
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .size(width = 350.dp, height = 255.dp)
+            .alpha(0.8f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ){
         Column (
-            modifier = Modifier
-                .padding(dimensionResource(id = R.dimen.padding_Large))
-                .width(300.dp)
-                .height(250.dp), // Atur transparansi,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large)),
             verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
         ){
             Row {
                 Icon(
-                    imageVector = Icons.Default.Star,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.idmenu1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = menu.idmenu.toString(),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.Menu,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.menu1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = menu.menu,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.Info,
+                    imageVector = Icons.Default.KeyboardArrowRight,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.harga1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = menu.harga,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.CheckCircle ,
+                    imageVector = Icons.Default.KeyboardArrowRight ,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.ketersediaan1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = menu.ketersediaan,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
             Row {
                 Icon(
-                    imageVector = Icons.Default.FavoriteBorder ,
+                    imageVector = Icons.Default.KeyboardArrowRight ,
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                 Text(
                     text = stringResource(id = R.string.kategori1),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_extra_Large)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_small)))
                 Text(
                     text = menu.kategori,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
             }

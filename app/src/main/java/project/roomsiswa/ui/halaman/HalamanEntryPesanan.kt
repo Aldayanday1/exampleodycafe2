@@ -200,7 +200,7 @@ fun FormInputPesanan(
                             expanded = false
                             onValueChange(detailPesanan.copy(idmenuforeignkey = selectedMenu ?: ""))
                         },
-                        text = { Text(text = menuItem.menu) }
+                        text = { Text(text = menuItem.menu) },
                     )
                 }
             }

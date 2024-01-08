@@ -12,6 +12,8 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -53,7 +55,14 @@ fun CafeTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateUp: () -> Unit = {}
 ){
-    CenterAlignedTopAppBar(title = { Text(title) },
+    CenterAlignedTopAppBar(
+        title = {
+            Text(
+                text = title,
+                fontFamily = FontFamily.Cursive,
+                fontWeight = FontWeight.ExtraBold
+            )
+        },
         modifier = modifier,
         scrollBehavior = scrollBehavior,
         navigationIcon = {
@@ -90,6 +99,8 @@ fun HostNavigasi(
         composable(DestinasiMenu.route){
             MenuScreen(
                 navigateToItemEntry = {navController.navigate(DestinasiMenuEntry.route)},
+                navigateBack = { navController.navigateUp() },
+                navigateToHome = {navController.navigate(DestinasiStart.route)},
                 onDetailClick = {
                     navController.navigate("${DetailsMenuDestination.route}/$it")
                 },
@@ -132,6 +143,8 @@ fun HostNavigasi(
         composable(DestinasiPesanan.route){
             PesananScreen(
                 navigateToItemEntry = {navController.navigate(DestinasiPesananEntry.route)},
+                navigateBack = { navController.navigateUp() },
+                navigateToHome = {navController.navigate(DestinasiStart.route)},
                 onDetailClick = {
                     navController.navigate("${DetailsPesananDestination.route}/$it")
                 },

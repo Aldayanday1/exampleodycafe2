@@ -28,7 +28,7 @@ interface RepositoriMenu {
     fun getAllMenuStream(): Flow<List<Menu>>
 }
 
-interface RepositoriPesanan : RepositoriMenu {
+interface RepositoriPesanan {
 
     suspend fun insertPesanan(pesanan: Pesanan)
 

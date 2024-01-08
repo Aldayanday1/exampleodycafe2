@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.synchronized
 
-@Database(entities = [Menu::class, Pesanan::class], version = 4, exportSchema = false)
+@Database(entities = [Menu::class, Pesanan::class], version = 5, exportSchema = false)
 abstract class DatabaseSiswa : RoomDatabase(){
 
     abstract fun menuDao() : MenuDao
@@ -19,7 +19,7 @@ abstract class DatabaseSiswa : RoomDatabase(){
         @Volatile
         private var Instance:DatabaseSiswa? = null
 
-        private val MIGRATION: Migration = object : Migration(3, 4) {
+        private val MIGRATION: Migration = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {}
         }
 
