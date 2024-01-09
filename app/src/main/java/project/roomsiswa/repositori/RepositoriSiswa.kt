@@ -26,6 +26,13 @@ interface RepositoriMenu {
     fun getMenuStream(id: Int): Flow<Menu?>
 
     fun getAllMenuStream(): Flow<List<Menu>>
+
+    // Search Fiture
+    fun searchMenu(query: String): Flow<List<Menu>>
+    suspend fun insertSearchMenu(menu: Menu)
+
+    // Save URL Image to Database
+    suspend fun updateMenuPhoto(idmenu: Int, imageUrl: String)
 }
 
 interface RepositoriPesanan {

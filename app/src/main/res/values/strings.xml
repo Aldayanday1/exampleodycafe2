@@ -46,6 +46,10 @@
     <string name="welcome_menu">List Menu</string>
     <string name="welcome_pesanan">List Pesanan</string>
 
+    // ADD IMAGE
+    <string name="addgallery">Add Photos From Gallery</string>
+    <string name="addcamera">Add Photos From Camera</string>
+
     <string name="title_entry_menu">Entry Menu</string>
     <string name="title_edit_menu">Edit Menu</string>
     <string name="title_detail_menu">Detail Menu</string>

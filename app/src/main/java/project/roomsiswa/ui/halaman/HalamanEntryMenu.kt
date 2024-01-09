@@ -1,27 +1,46 @@
 package project.roomsiswa.ui.halaman
 
+import android.content.Intent
+import android.provider.MediaStore
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import project.roomsiswa.R
@@ -36,6 +55,7 @@ object DestinasiMenuEntry: DestinasiNavigasi {
     override val route = "item_entry_menu"
     override val titleRes = R.string.title_entry_menu
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EntryMenuScreen(
@@ -55,24 +75,37 @@ fun EntryMenuScreen(
                 title = stringResource(DestinasiMenuEntry.titleRes),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                modifier = Modifier.alpha(0.5f)
             )
         }
     ){ innerPadding ->
-        EntryMenuBody(
-            uiStateMenu = viewModel.uiStateMenu,
-            onMenuValueChange = viewModel::updateUiStateMenu,
-            onSaveClick = {
-                coroutinScope.launch {
-                    viewModel.saveMenu()
-                    navigateBack()
-                }
-            },
-            modifier = Modifier
-                .padding(innerPadding)
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
-        )
+
+        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.esteh),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+            )
+
+            EntryMenuBody(
+                uiStateMenu = viewModel.uiStateMenu,
+                onMenuValueChange = viewModel::updateUiStateMenu,
+                onSaveClick = {
+                    coroutinScope.launch {
+                        viewModel.saveMenu()
+                        navigateBack()
+                    }
+                },
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+
+            )
+        }
+
     }
 }
 
@@ -83,6 +116,7 @@ fun EntryMenuBody(
     onSaveClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
+
     Column (
         verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_Large)),
         modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium))
@@ -90,16 +124,27 @@ fun EntryMenuBody(
         FormInputMenu(
             detailMenu = uiStateMenu.detailMenu,
             onValueChange = onMenuValueChange,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
-        Button(
+        OutlinedButton(
             onClick = onSaveClick,
             enabled = uiStateMenu.isEntryValid,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .width(200.dp)
+                .align(Alignment.CenterHorizontally),
+            border = BorderStroke(0.dp, Color.Transparent),  // Menghapus border
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.DarkGray.copy(alpha = 0.8f),
+                contentColor = Color.DarkGray.copy(alpha = 0.4f)
+            ),
+            shape = MaterialTheme.shapes.small
         ) {
-            Text(stringResource(id = R.string.btn_submit))
+            Text(
+                text = stringResource(id = R.string.btn_submit),
+                color = Color.White
+            )
         }
+
     }
 }
 

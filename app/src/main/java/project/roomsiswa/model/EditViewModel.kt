@@ -71,13 +71,14 @@ class EditViewModel(
     fun updateUiStatePesanan(detailPesanan: DetailPesanan, menuItems: List<Menu>) {
         pesananUiState = UIStatePesanan(
             detailPesanan = detailPesanan,
-            isEntryValid = validasiInputPesanan(detailPesanan, menuItems)
+            isEntryValid = validasiInputPesanan(detailPesanan, menuItems),
+
         )
     }
 
     private fun validasiInputMenu(uiState: DetailMenu = menuUiState.detailMenu): Boolean {
         return with(uiState) {
-            idmenu != 0 && menu.isNotBlank() && harga.isNotBlank() && ketersediaan.isNotBlank() && kategori.isNotBlank()
+            idmenu != null && menu.isNotBlank() && harga.isNotBlank() && ketersediaan.isNotBlank() && kategori.isNotBlank()
         }
     }
     private fun validasiInputPesanan(uiState: DetailPesanan = pesananUiState.detailPesanan, menuItems: List<Menu>): Boolean {

@@ -6,11 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import project.roomsiswa.data.Menu
+import project.roomsiswa.data.MenuDao
 import project.roomsiswa.data.Pesanan
 import project.roomsiswa.repositori.RepositoriMenu
 import project.roomsiswa.repositori.RepositoriPesanan
@@ -99,38 +102,52 @@ class EntryViewModel(
 
     /*--------SEARCH--------*/
 
+        private val _searchResult = MutableStateFlow<List<Menu>>(emptyList())
+        val searchResult: StateFlow<List<Menu>> = _searchResult.asStateFlow()
 
-    /*---ID SET AUTOMATICALLY---*/
-
-    init {
-        // Panggil fungsi untuk mendapatkan daftar menu dari repositori
-        fetchMenu() // Mengganti nama fungsi getAllMenu() menjadi fetchMenu()
-    }
-
-    // Fungsi untuk mendapatkan daftar menu dari repositori
-    private fun fetchMenu() {
-        viewModelScope.launch {
-            repositoriMenu.getAllMenuStream().collect { menuList ->
-                // Update daftar menu saat data berubah
-                _menuItems.value = menuList
-                fillIdPesananAutomatically() // Setelah mendapatkan daftar menu, isi idpesanan secara otomatis
+        fun searchMenu(query: String) {
+            viewModelScope.launch {
+                repositoriMenu.searchMenu(query).collect { menuList ->
+                    _searchResult.value = menuList
+                }
             }
         }
-    }
 
-    // Mengisi ID pesanan secara otomatis dengan salah satu data dari tabel Menu
-    private fun fillIdPesananAutomatically() {
-        val menuList = _menuItems.value // Gunakan menuItems dari StateFlow
 
-        // Ambil salah satu data dari menuList (misalnya yang pertama) dan gunakan idmenu-nya
-        val idPesanan = menuList.firstOrNull()?.idmenu ?: 0
+    /*--------IMAGE (Mengatur URL)--------*/
 
-        // Set idpesanan di UIStatePesanan dengan data yang sudah terisi
-        uiStatePesanan = UIStatePesanan(
-            detailPesanan = uiStatePesanan.detailPesanan.copy(idpesanan = idPesanan),
-            isEntryValid = validasiInputPesanan(uiStatePesanan.detailPesanan, menuList)
-        )
-    }
+
+//    /*---ID SET AUTOMATICALLY---*/
+//
+//    init {
+//        // Panggil fungsi untuk mendapatkan daftar menu dari repositori
+//        fetchMenu() // Mengganti nama fungsi getAllMenu() menjadi fetchMenu()
+//    }
+//
+//    // Fungsi untuk mendapatkan daftar menu dari repositori
+//    private fun fetchMenu() {
+//        viewModelScope.launch {
+//            repositoriMenu.getAllMenuStream().collect { menuList ->
+//                // Update daftar menu saat data berubah
+//                _menuItems.value = menuList
+//                fillIdPesananAutomatically() // Setelah mendapatkan daftar menu, isi idpesanan secara otomatis
+//            }
+//        }
+//    }
+//
+//    // Mengisi ID pesanan secara otomatis dengan salah satu data dari tabel Menu
+//    private fun fillIdPesananAutomatically() {
+//        val menuList = _menuItems.value // Gunakan menuItems dari StateFlow
+//
+//        // Ambil salah satu data dari menuList (misalnya yang pertama) dan gunakan idmenu-nya
+//        val idPesanan = menuList.firstOrNull()?.idmenu ?: 0
+//
+//        // Set idpesanan di UIStatePesanan dengan data yang sudah terisi
+//        uiStatePesanan = UIStatePesanan(
+//            detailPesanan = uiStatePesanan.detailPesanan.copy(idpesanan = idPesanan),
+//            isEntryValid = validasiInputPesanan(uiStatePesanan.detailPesanan, menuList)
+//        )
+//    }
 
 }
 
@@ -147,6 +164,7 @@ data class DetailMenu(
     val harga: String = "",
     val ketersediaan: String = "",
     val kategori: String = "",
+    val foto: String = "",
 )
 
 // Fungsi untuk mengkonversi data input ke data dalam tabel Menu
@@ -155,7 +173,8 @@ fun DetailMenu.toMenu(): Menu = Menu(
     menu = menu,
     harga = harga,
     ketersediaan = ketersediaan,
-    kategori = kategori
+    kategori = kategori,
+    foto = foto
 )
 // Fungsi untuk mengubah Menu menjadi UIStateMenu
 fun Menu.toUiStateMenu(isEntryValid: Boolean = false): UIStateMenu = UIStateMenu(
@@ -169,7 +188,8 @@ fun Menu.toDetailMenu(): DetailMenu = DetailMenu(
     menu = menu,
     harga = harga,
     ketersediaan = ketersediaan,
-    kategori = kategori
+    kategori = kategori,
+    foto = foto
 )
 
 /* ------------- PESANAN ------------ */

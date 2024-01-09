@@ -32,6 +32,15 @@ class OfflineRepositoriSiswa(
 
     override fun getAllMenuStream(): Flow<List<Menu>> = menuDao.getAllMenu()
 
+    // Search Fiture
+    override fun searchMenu(query: String): Flow<List<Menu>> = menuDao.getAllMenu()
+
+    override suspend fun insertSearchMenu(menu: Menu) = menuDao.insert(menu)
+
+    // Image Fiture
+     override suspend fun updateMenuPhoto(idmenu: Int, imageUrl: String) {
+        menuDao.updateMenuPhoto(idmenu, imageUrl)
+    }
 
     override suspend fun insertPesanan(pesanan: Pesanan) = pesananDao.insert(pesanan)
 

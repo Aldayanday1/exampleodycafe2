@@ -8,30 +8,14 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
-//@Dao
-//interface SiswaDao {
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    suspend fun insert(siswa: Siswa)
-//
-//    @Update
-//    suspend fun update(siswa: Siswa)
-//
-//    @Delete
-//    suspend fun delete(siswa: Siswa)
-//
-//    @Query("SELECT * from tblSiswa WHERE id = :id")
-//    fun getSiswa(id: Int): Flow<Siswa>
-//
-//    @Query("SELECT * from tblSiswa ORDER BY nama ASC")
-//    fun getAllSiswa(): Flow<List<Siswa>>
-//}
 
 @Dao
 interface MenuDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(menu: Menu)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    // update -> dipakai juga u/ (Upload Img)
+    @Update
     suspend fun update(menu: Menu)
 
     @Delete
@@ -44,6 +28,17 @@ interface MenuDao {
     // mengambil keseluruhan data dari tblMenu, serta mengurutkan alfabetis dari atribut nama dengan menggunakan ascending & descending, dari A-Z & Z-A
     @Query("SELECT * from tblMenu ORDER BY kategori ASC, ketersediaan DESC")
     fun getAllMenu(): Flow<List<Menu>>
+
+    // Search Menu
+    @Query("SELECT * FROM tblMenu WHERE menu LIKE '%' || :query || '%'")
+    fun searchMenu(query: String): Flow<List<Menu>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSearchMenu(menu: Menu)
+
+    // Fungsi untuk menyimpan URL gambar
+    @Query("UPDATE tblMenu SET foto = :imageUrl WHERE idmenu = :idmenu")
+    suspend fun updateMenuPhoto(idmenu: Int, imageUrl: String)
 }
 
 

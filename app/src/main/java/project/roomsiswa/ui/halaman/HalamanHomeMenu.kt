@@ -1,8 +1,12 @@
 package project.roomsiswa.ui.halaman
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
@@ -30,22 +35,30 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import project.roomsiswa.R
 import project.roomsiswa.data.Menu
@@ -70,6 +83,9 @@ fun MenuScreen(
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    //------- SEARCH -------/
+    val searchQueryState = remember { mutableStateOf("") }
 
     Scaffold (
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -126,6 +142,12 @@ fun MenuScreen(
             innerPadding ->
         val uiStateMenu by viewModel.menuUiState.collectAsState()
 
+        // filter = pemfilteran terhadap elemen yg ditampilkan (menu)
+        //ignorecase true = mengabaikan kondisi dari huruf kapital / huruf kecilnya
+        val filteredMenu = uiStateMenu.listMenu.filter {
+            it.menu.contains(searchQueryState.value, ignoreCase = true)
+        }
+
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.esteh),
@@ -134,8 +156,21 @@ fun MenuScreen(
                 contentScale = ContentScale.FillBounds,
             )
 
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            ) {
+                OutlinedTextField(
+                    value = searchQueryState.value,
+                    onValueChange = { searchQueryState.value = it },
+                    label = { Text("Search") },
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
             BodyMenu(
-                itemMenu = uiStateMenu.listMenu,
+                itemMenu = filteredMenu,
                 modifier = Modifier
                     .padding(innerPadding)
                     .fillMaxSize(),
@@ -151,25 +186,46 @@ fun BodyMenu(
     modifier: Modifier = Modifier,
     onMenuClick: (Int) -> Unit = {}
 ){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize()
     ){
         if (itemMenu.isEmpty()) {
-            /** kalau list data kosong, makan muncul teks ini*/
-            Text(
-                text = stringResource(R.string.deskripsi_no_item),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge
-            )
-            /** kalau ada isi data nya muncul = list menu*/
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .alpha(0.8f)
+                    .padding(bottom = 150.dp)
+            ){
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
+                        .clip(CircleShape)
+                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.odycafe),
+                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+                Spacer(modifier = Modifier.padding(top = 35.dp))
+                Text(
+                    text = stringResource(R.string.deskripsi_no_item),
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontSize = 25.sp,
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
+                )
+            }
         } else {
             ListMenu(
                 itemMenu = itemMenu,
                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                onItemMenuClick = {onMenuClick(it.idmenu)
-                }
+                onItemMenuClick = { onMenuClick(it.idmenu) }
             )
         }
     }
