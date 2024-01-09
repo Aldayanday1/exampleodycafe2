@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -148,6 +149,8 @@ fun MenuScreen(
             it.menu.contains(searchQueryState.value, ignoreCase = true)
         }
 
+
+
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.esteh),
@@ -156,99 +159,172 @@ fun MenuScreen(
                 contentScale = ContentScale.FillBounds,
             )
 
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(top = 20.dp),
+                contentPadding = innerPadding,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                OutlinedTextField(
-                    value = searchQueryState.value,
-                    onValueChange = { searchQueryState.value = it },
-                    label = { Text("Search") },
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
-
-            BodyMenu(
-                itemMenu = filteredMenu,
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                onMenuClick = onDetailClick
-            )
-        }
-    }
-}
-
-@Composable
-fun BodyMenu(
-    itemMenu: List<Menu>,
-    modifier: Modifier = Modifier,
-    onMenuClick: (Int) -> Unit = {}
-){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ){
-        if (itemMenu.isEmpty()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .alpha(0.8f)
-                    .padding(bottom = 150.dp)
-            ){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
-                        .clip(CircleShape)
-                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.odycafe),
-                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
-                        modifier = Modifier.fillMaxSize()
+                item {
+                    OutlinedTextField(
+                        value = searchQueryState.value,
+                        onValueChange = { searchQueryState.value = it },
+                        label = { Text("Search") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search Icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
                     )
                 }
-                Spacer(modifier = Modifier.padding(top = 35.dp))
-                Text(
-                    text = stringResource(R.string.deskripsi_no_item),
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 25.sp,
-                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
-                )
+                if (filteredMenu.isEmpty()) {
+                    item {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 30.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .alpha(0.8f)
+                                    .padding(bottom = 150.dp)
+                            ) {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
+                                        .clip(CircleShape)
+                                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.odycafe),
+                                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                                Spacer(modifier = Modifier.padding(top = 35.dp))
+                                Text(
+                                    text = stringResource(R.string.deskripsi_no_item),
+                                    textAlign = TextAlign.Center,
+                                    fontFamily = FontFamily.Cursive,
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontSize = 25.sp,
+                                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    items(filteredMenu) { menu ->
+                        DataMenu(
+                            menu = menu,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp, vertical = 2.dp)
+                                .clickable { onDetailClick(menu.idmenu) }
+                        )
+                    }
+                }
             }
-        } else {
-            ListMenu(
-                itemMenu = itemMenu,
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                onItemMenuClick = { onMenuClick(it.idmenu) }
-            )
         }
+
+
+
+
+//        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+//
+//            Image(
+//                painter = painterResource(id = R.drawable.esteh),
+//                contentDescription = null,
+//                modifier = Modifier.fillMaxSize(),
+//                contentScale = ContentScale.FillBounds,
+//            )
+//
+//            if (filteredMenu.isEmpty()) {
+//                Box(
+//                    contentAlignment = Alignment.Center,
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(top = 30.dp)
+//                ) {
+//                    Column(
+//                        horizontalAlignment = Alignment.CenterHorizontally,
+//                        modifier = Modifier
+//                            .alpha(0.8f)
+//                            .padding(bottom = 150.dp)
+//                    ) {
+//                        Box(
+//                            contentAlignment = Alignment.Center,
+//                            modifier = Modifier
+//                                .size(180.dp) // Ubah ukuran sesuai dengan preferensi
+//                                .clip(CircleShape)
+//                                .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
+//                        ) {
+//                            Image(
+//                                painter = painterResource(id = R.drawable.odycafe),
+//                                contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
+//                                modifier = Modifier.fillMaxSize()
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.padding(top = 35.dp))
+//                        Text(
+//                            text = stringResource(R.string.deskripsi_no_item),
+//                            textAlign = TextAlign.Center,
+//                            fontFamily = FontFamily.Cursive,
+//                            fontWeight = FontWeight.Bold,
+//                            style = MaterialTheme.typography.titleLarge,
+//                            fontSize = 25.sp,
+//                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
+//                        )
+//                    }
+//                }
+//            } else {
+//                LazyColumn(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(top = 35.dp),
+//                    contentPadding = innerPadding,
+//                    verticalArrangement = Arrangement.spacedBy(16.dp)
+//                ) {
+//                    item {
+//                        OutlinedTextField(
+//                            value = searchQueryState.value,
+//                            onValueChange = { searchQueryState.value = it },
+//                            label = { Text("Search") },
+//                            leadingIcon = {
+//                                Icon(
+//                                    imageVector = Icons.Default.Search,
+//                                    contentDescription = "Search Icon",
+//                                    modifier = Modifier.size(24.dp) // Ukuran ikon bisa disesuaikan
+//                                )
+//                            },
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 16.dp)
+//                        )
+//                    }
+//
+//                    items(filteredMenu) { menu ->
+//                        DataMenu(
+//                            menu = menu,
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .padding(horizontal = 30.dp, vertical = 2.dp)
+//                                .clickable { onDetailClick(menu.idmenu) }
+//                        )
+//                    }
+//                }
+//
+//            }
+//        }
     }
 }
 
-@Composable
-fun ListMenu(
-    itemMenu: List<Menu>,
-    modifier: Modifier= Modifier,
-    onItemMenuClick: (Menu) -> Unit
-){
-    LazyColumn(modifier = Modifier){
-        items(items = itemMenu, key = {it.idmenu}){
-                person ->
-            DataMenu(
-                menu = person,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_small))
-                    .clickable { onItemMenuClick(person) }
-            )
-        }
-    }
-}
 
 @Composable
 fun DataMenu(
@@ -257,7 +333,7 @@ fun DataMenu(
 ){
     Card (
         modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_small))
+            .padding(bottom = 16.dp)
             .size(width = 350.dp, height = 255.dp)
             .alpha(0.8f),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
