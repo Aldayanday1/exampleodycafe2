@@ -55,7 +55,7 @@ import project.roomsiswa.navigasi.DestinasiNavigasi
 
 object DestinasiListMenu : DestinasiNavigasi {
     override val route = "listmenu"
-    override val titleRes = R.string.welcome_menu
+    override val titleRes = R.string.list_menu
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,7 +72,7 @@ fun MenuListScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CafeTopAppBar(
-                title = stringResource(DestinasiMenu.titleRes),
+                title = stringResource(DestinasiListMenu.titleRes),
                 canNavigateBack = true,
                 navigateUp = navigateBack,
                 scrollBehavior = scrollBehavior,

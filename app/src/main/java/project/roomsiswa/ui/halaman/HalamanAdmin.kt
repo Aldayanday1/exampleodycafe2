@@ -13,10 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -25,21 +27,30 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import project.roomsiswa.R
+import project.roomsiswa.navigasi.CafeTopAppBar
 import project.roomsiswa.navigasi.DestinasiNavigasi
 
 object DestinasiAdmin : DestinasiNavigasi {
     override val route = "admin"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.welcome
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminScreen(
+    navigateBack: () -> Unit,
     onNextButtonMenuClicked: () -> Unit,
-    onNextButtonPesananListClicked : () -> Unit
+    onNextButtonPesananListClicked: () -> Unit
 ) {
-    BoxWithConstraints(
+    Column(
         modifier = Modifier.fillMaxSize()
     ) {
+        CafeTopAppBar(
+            title = stringResource(DestinasiAdmin.titleRes),
+            canNavigateBack = true,
+            navigateUp = navigateBack,
+            modifier = Modifier.alpha(0.5f)
+        )
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -66,13 +77,6 @@ fun AdminScreen(
                         fontSize = 55.sp,
                         fontFamily = FontFamily.Cursive,
                     )
-//                    Spacer(modifier = Modifier.height(30.dp))
-//                    Text(
-//                        text = "Memori Manis di Setiap Kesibukan",
-//                        color = Color.DarkGray,
-//                        fontSize = 20.sp,
-//                        fontFamily = FontFamily.Cursive,
-//                    )
                 }
                 Spacer(modifier = Modifier.height(260.dp))
                 Column(
@@ -97,9 +101,7 @@ fun AdminScreen(
                         onClick = onNextButtonPesananListClicked,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray.copy(alpha = 0.2f),
-                            /** Mengubah warna ke DarkGray dengan Transparansi 20%*/
                             contentColor = Color.White.copy(alpha = 0.8f)
-                            /** Menambah transparansi*/
                         )
                     ) {
                         Text(stringResource(R.string.list_pesanan), color = Color.DarkGray)
@@ -109,3 +111,4 @@ fun AdminScreen(
         }
     }
 }
+

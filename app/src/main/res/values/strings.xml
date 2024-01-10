@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Hi !</string>
+    <string name="app_name">ody cafe</string>
 
     // MENU
     <string name="idmenu">ID Menu*</string>
@@ -76,5 +76,7 @@
     <string name="log_admim">Log as Admin</string>
     <string name="log_customer">Log as Customer</string>
 
-
+    <string name="welcome">Welcome</string>
+    <string name="admim">Admin</string>
+    <string name="customer">Customer</string>
 </resources>

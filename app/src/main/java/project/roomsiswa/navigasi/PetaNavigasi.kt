@@ -115,12 +115,14 @@ fun HostNavigasi(
             AdminScreen (
                 onNextButtonMenuClicked = {navController.navigate(DestinasiMenu.route)},
                 onNextButtonPesananListClicked = {navController.navigate(DestinasiListPesanan.route)},
+                navigateBack = { navController.popBackStack()},
             )
         }
         composable(DestinasiCustomer.route){
             CustomerScreen (
                 onNextButtonPesananClicked = {navController.navigate(DestinasiPesanan.route)},
                 onNextButtonMenuListClicked = {navController.navigate(DestinasiListMenu.route)},
+                navigateBack = { navController.popBackStack()},
             )
         }
 
