@@ -1,5 +1,4 @@
 package project.roomsiswa.ui.halaman
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -27,15 +25,15 @@ import androidx.compose.ui.unit.sp
 import project.roomsiswa.R
 import project.roomsiswa.navigasi.DestinasiNavigasi
 
-object DestinasiAdmin : DestinasiNavigasi {
-    override val route = "admin"
+object DestinasiCustomer : DestinasiNavigasi {
+    override val route = "customer"
     override val titleRes = R.string.app_name
 }
 
 @Composable
-fun AdminScreen(
-    onNextButtonMenuClicked: () -> Unit,
-    onNextButtonPesananListClicked : () -> Unit
+fun CustomerScreen(
+    onNextButtonPesananClicked: () -> Unit,
+    onNextButtonMenuListClicked : () -> Unit
 ) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -61,7 +59,7 @@ fun AdminScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = "Hi Admin !",
+                        text = "Hi Customer !",
                         color = Color.DarkGray,
                         fontSize = 55.sp,
                         fontFamily = FontFamily.Cursive,
@@ -82,19 +80,19 @@ fun AdminScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = onNextButtonMenuClicked,
+                        onClick = onNextButtonPesananClicked,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray.copy(alpha = 0.2f),
                             contentColor = Color.White.copy(alpha = 0.8f)
                         )
                     ) {
-                        Text(stringResource(R.string.entry_menu), color = Color.DarkGray)
+                        Text(stringResource(R.string.entry_pesanan), color = Color.DarkGray)
                     }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = onNextButtonPesananListClicked,
+                        onClick = onNextButtonMenuListClicked,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray.copy(alpha = 0.2f),
                             /** Mengubah warna ke DarkGray dengan Transparansi 20%*/
@@ -102,7 +100,7 @@ fun AdminScreen(
                             /** Menambah transparansi*/
                         )
                     ) {
-                        Text(stringResource(R.string.list_pesanan), color = Color.DarkGray)
+                        Text(stringResource(R.string.list_menu), color = Color.DarkGray)
                     }
                 }
             }

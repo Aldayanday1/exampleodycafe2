@@ -4,18 +4,6 @@ import kotlinx.coroutines.flow.Flow
 import project.roomsiswa.data.Menu
 import project.roomsiswa.data.Pesanan
 
-//interface RepositoriSiswa : RepositoriPesanan {
-//    suspend fun insertSiswa(siswa: Siswa)
-//
-//    suspend fun updateSiswa(siswa: Siswa)
-//
-//    suspend fun deleteSiswa(siswa: Siswa)
-//
-//    fun getSiswaStream(id: Int): Flow<Siswa?>
-//
-//    fun getAllSiswaStream(): Flow<List<Siswa>>
-//}
-
 interface RepositoriMenu {
     suspend fun insertMenu(menu: Menu)
 
@@ -27,7 +15,7 @@ interface RepositoriMenu {
 
     fun getAllMenuStream(): Flow<List<Menu>>
 
-    // Search Fiture
+    // Search Fiture Menu
     fun searchMenu(query: String): Flow<List<Menu>>
     suspend fun insertSearchMenu(menu: Menu)
 
@@ -45,4 +33,8 @@ interface RepositoriPesanan {
 
     fun getPesananStream(id: Int): Flow<Pesanan?>
     fun getAllPesananStream(): Flow<List<Pesanan>>
+
+    // Search Fiture Pesanan
+    fun searchPesanan(query: String): Flow<List<Pesanan>>
+    suspend fun insertSearchPesanan(pesanan: Pesanan)
 }

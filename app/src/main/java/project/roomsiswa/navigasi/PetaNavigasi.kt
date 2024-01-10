@@ -22,14 +22,24 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import project.roomsiswa.R
+import project.roomsiswa.ui.halaman.AdminScreen
+import project.roomsiswa.ui.halaman.CustomerScreen
+import project.roomsiswa.ui.halaman.DestinasiAdmin
+import project.roomsiswa.ui.halaman.DestinasiCustomer
+import project.roomsiswa.ui.halaman.DestinasiListMenu
+import project.roomsiswa.ui.halaman.DestinasiListPesanan
 import project.roomsiswa.ui.halaman.DestinasiMenu
 import project.roomsiswa.ui.halaman.DestinasiMenuEntry
 import project.roomsiswa.ui.halaman.DestinasiPesanan
 import project.roomsiswa.ui.halaman.DestinasiPesananEntry
 import project.roomsiswa.ui.halaman.DestinasiStart
 import project.roomsiswa.ui.halaman.DetailsMenuDestination
+import project.roomsiswa.ui.halaman.DetailsMenuListDestination
+import project.roomsiswa.ui.halaman.DetailsMenuListScreen
 import project.roomsiswa.ui.halaman.DetailsMenuScreen
 import project.roomsiswa.ui.halaman.DetailsPesananDestination
+import project.roomsiswa.ui.halaman.DetailsPesananListDestination
+import project.roomsiswa.ui.halaman.DetailsPesananListScreen
 import project.roomsiswa.ui.halaman.DetailsPesananScreen
 import project.roomsiswa.ui.halaman.EntryMenuScreen
 import project.roomsiswa.ui.halaman.EntryPesananScreen
@@ -37,7 +47,9 @@ import project.roomsiswa.ui.halaman.ItemEditMenuDestination
 import project.roomsiswa.ui.halaman.ItemEditMenuScreen
 import project.roomsiswa.ui.halaman.ItemEditPesananDestination
 import project.roomsiswa.ui.halaman.ItemEditPesananScreen
+import project.roomsiswa.ui.halaman.MenuListScreen
 import project.roomsiswa.ui.halaman.MenuScreen
+import project.roomsiswa.ui.halaman.PesananListScreen
 import project.roomsiswa.ui.halaman.PesananScreen
 import project.roomsiswa.ui.halaman.StartScreen
 
@@ -87,10 +99,28 @@ fun HostNavigasi(
         startDestination = DestinasiStart.route,
         modifier = Modifier
     ) {
+
+        /* ------------- START ------------ */
+
         composable(DestinasiStart.route){
             StartScreen (
+                onNextButtonAdminClicked = {navController.navigate(DestinasiAdmin.route)},
+                onNextButtonCustomerClicked = {navController.navigate(DestinasiCustomer.route)},
+            )
+        }
+
+        /* ------------- ADMIN & CUST ------------ */
+
+        composable(DestinasiAdmin.route){
+            AdminScreen (
                 onNextButtonMenuClicked = {navController.navigate(DestinasiMenu.route)},
+                onNextButtonPesananListClicked = {navController.navigate(DestinasiListPesanan.route)},
+            )
+        }
+        composable(DestinasiCustomer.route){
+            CustomerScreen (
                 onNextButtonPesananClicked = {navController.navigate(DestinasiPesanan.route)},
+                onNextButtonMenuListClicked = {navController.navigate(DestinasiListMenu.route)},
             )
         }
 
@@ -138,6 +168,28 @@ fun HostNavigasi(
             )
         }
 
+        /* ------------- LIST MENU ------------ */
+
+        composable(
+            DestinasiListMenu.route){
+            MenuListScreen(
+                navigateBack = { navController.navigateUp() },
+                onDetailMenuListClick = {
+                    navController.navigate("${DetailsMenuListDestination.route}/$it")
+                },
+            )
+        }
+        composable(
+            DetailsMenuListDestination.routeWithArgs,
+            arguments = listOf(navArgument(DetailsMenuListDestination.detailIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            DetailsMenuListScreen(
+                navigateBack = { navController.popBackStack() },
+            )
+        }
+
         /* ------------- NAV PESANAN ------------ */
 
         composable(DestinasiPesanan.route){
@@ -180,6 +232,28 @@ fun HostNavigasi(
             ItemEditPesananScreen(
                 navigateBack = { navController.popBackStack() },
                 onNavigateUp = { navController.navigateUp() }
+            )
+        }
+
+        /* ------------- LIST PESANAN  ------------ */
+
+        composable(
+            DestinasiListPesanan.route){
+            PesananListScreen(
+                navigateBack = { navController.navigateUp() },
+                onDetailPesananListClick = {
+                    navController.navigate("${DetailsPesananListDestination.route}/$it")
+                },
+            )
+        }
+        composable(
+            DetailsPesananListDestination.routeWithArgs,
+            arguments = listOf(navArgument(DetailsPesananListDestination.detailIdArg) {
+                type = NavType.IntType
+            })
+        ) {
+            DetailsPesananListScreen(
+                navigateBack = { navController.popBackStack() },
             )
         }
     }

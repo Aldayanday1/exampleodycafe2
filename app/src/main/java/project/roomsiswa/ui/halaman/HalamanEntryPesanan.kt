@@ -108,7 +108,8 @@ fun EntryPesananScreen(
 
             EntryPesananBody(
                 uiStatePesanan = viewModel.uiStatePesanan,
-                onPesananValueChange = { detailPesanan -> viewModel.updateUiStatePesanan(detailPesanan, menuItems) },
+                onPesananValueChange = { detailPesanan ->
+                    viewModel.updateUiStatePesanan(detailPesanan, menuItems) },
                 onSaveClick = {
                     coroutinScope.launch {
                         viewModel.savePesanan(menuItems)
@@ -176,28 +177,14 @@ fun FormInputPesanan(
 ){
     Card(
         modifier = modifier
-            .padding(dimensionResource(id = R.dimen.padding_small))
-            .size(width = 350.dp, height = 590.dp)
+            .padding(top = 15.dp)
+            .size(width = 0.dp, height = 610.dp)
             .alpha(0.8f),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(
-            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large)),
-            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_extra_Large)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
         ) {
-            Column(
-                modifier = modifier,
-                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
-            ) {
-                /** OutlinedTextField memerlukan String sbg nilai value*/
-                OutlinedTextField(
-                    value = detailPesanan.nama,
-                    onValueChange = { onValueChange(detailPesanan.copy(nama = it)) },
-                    label = { Text(stringResource(R.string.nama)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = enabled,
-                    singleLine = true
-                )
                 OutlinedTextField(
                     value = detailPesanan.idpesanan?.toString() ?: "",
                     onValueChange = {
@@ -212,6 +199,15 @@ fun FormInputPesanan(
                     enabled = enabled,
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+                /** OutlinedTextField memerlukan String sbg nilai value*/
+                OutlinedTextField(
+                    value = detailPesanan.nama,
+                    onValueChange = { onValueChange(detailPesanan.copy(nama = it)) },
+                    label = { Text(stringResource(R.string.nama)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true
                 )
 
                 Divider()
@@ -237,7 +233,7 @@ fun FormInputPesanan(
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
-                        modifier = Modifier.width(380.dp),
+                        modifier = Modifier.width(315.dp),
                     ) {
                         for (menuItem in menuItems) {
                             DropdownMenuItem(
@@ -281,7 +277,10 @@ fun FormInputPesanan(
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.padding(top = 0.dp))
+                Spacer(modifier = Modifier
+                    .padding(top = 0.dp, bottom = 0.dp)
+                )
+
                 Divider()
 
                 if (enabled) {
@@ -290,9 +289,6 @@ fun FormInputPesanan(
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
                     )
                 }
-
-
-            }
         }
     }
 }

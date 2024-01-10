@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -33,8 +34,8 @@ object DestinasiStart : DestinasiNavigasi {
 
 @Composable
 fun StartScreen(
-    onNextButtonMenuClicked: () -> Unit,
-    onNextButtonPesananClicked: () -> Unit,
+    onNextButtonAdminClicked: () -> Unit,
+    onNextButtonCustomerClicked: () -> Unit,
 ) {
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
@@ -81,19 +82,19 @@ fun StartScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = onNextButtonPesananClicked,
+                        onClick = onNextButtonAdminClicked,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray.copy(alpha = 0.2f),
                             contentColor = Color.White.copy(alpha = 0.8f)
                         )
                     ) {
-                        Text(stringResource(R.string.nav_pesanan), color = Color.DarkGray)
+                        Text(stringResource(R.string.log_admim), color = Color.DarkGray)
                     }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp),
-                        onClick = onNextButtonMenuClicked,
+                        onClick = onNextButtonCustomerClicked,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.DarkGray.copy(alpha = 0.2f),
                             /** Mengubah warna ke DarkGray dengan Transparansi 20%*/
@@ -101,7 +102,7 @@ fun StartScreen(
                             /** Menambah transparansi*/
                         )
                     ) {
-                        Text(stringResource(R.string.nav_menu), color = Color.DarkGray)
+                        Text(stringResource(R.string.log_customer), color = Color.DarkGray)
                     }
                 }
             }

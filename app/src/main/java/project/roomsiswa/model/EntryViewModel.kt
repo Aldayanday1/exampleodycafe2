@@ -100,55 +100,31 @@ class EntryViewModel(
         }
     }
 
-    /*--------SEARCH--------*/
+    /*--------SEARCH MENU--------*/
 
-        private val _searchResult = MutableStateFlow<List<Menu>>(emptyList())
-        val searchResult: StateFlow<List<Menu>> = _searchResult.asStateFlow()
+    private val _searchResultMenu = MutableStateFlow<List<Menu>>(emptyList())
+    val searchResult: StateFlow<List<Menu>> = _searchResultMenu.asStateFlow()
 
-        fun searchMenu(query: String) {
-            viewModelScope.launch {
-                repositoriMenu.searchMenu(query).collect { menuList ->
-                    _searchResult.value = menuList
-                }
+    fun searchMenu(query: String) {
+        viewModelScope.launch {
+            repositoriMenu.searchMenu(query).collect { menuList ->
+                _searchResultMenu.value = menuList
             }
         }
+    }
 
+    /*--------SEARCH MENU--------*/
 
-    /*--------IMAGE (Mengatur URL)--------*/
+    private val _searchResultPesanan = MutableStateFlow<List<Pesanan>>(emptyList())
+    val pesananResult: StateFlow<List<Pesanan>> = _searchResultPesanan.asStateFlow()
 
-
-//    /*---ID SET AUTOMATICALLY---*/
-//
-//    init {
-//        // Panggil fungsi untuk mendapatkan daftar menu dari repositori
-//        fetchMenu() // Mengganti nama fungsi getAllMenu() menjadi fetchMenu()
-//    }
-//
-//    // Fungsi untuk mendapatkan daftar menu dari repositori
-//    private fun fetchMenu() {
-//        viewModelScope.launch {
-//            repositoriMenu.getAllMenuStream().collect { menuList ->
-//                // Update daftar menu saat data berubah
-//                _menuItems.value = menuList
-//                fillIdPesananAutomatically() // Setelah mendapatkan daftar menu, isi idpesanan secara otomatis
-//            }
-//        }
-//    }
-//
-//    // Mengisi ID pesanan secara otomatis dengan salah satu data dari tabel Menu
-//    private fun fillIdPesananAutomatically() {
-//        val menuList = _menuItems.value // Gunakan menuItems dari StateFlow
-//
-//        // Ambil salah satu data dari menuList (misalnya yang pertama) dan gunakan idmenu-nya
-//        val idPesanan = menuList.firstOrNull()?.idmenu ?: 0
-//
-//        // Set idpesanan di UIStatePesanan dengan data yang sudah terisi
-//        uiStatePesanan = UIStatePesanan(
-//            detailPesanan = uiStatePesanan.detailPesanan.copy(idpesanan = idPesanan),
-//            isEntryValid = validasiInputPesanan(uiStatePesanan.detailPesanan, menuList)
-//        )
-//    }
-
+    fun searchPesanan(query: String) {
+        viewModelScope.launch {
+            repositoriPesanan.searchPesanan(query).collect { pesananList ->
+                _searchResultPesanan.value = pesananList
+            }
+        }
+    }
 }
 
 /* ------------- MENU ------------ */

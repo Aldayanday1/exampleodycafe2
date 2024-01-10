@@ -9,15 +9,19 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -61,7 +65,6 @@ object DestinasiMenuEntry: DestinasiNavigasi {
 fun EntryMenuScreen(
     onNavigateUp: () -> Unit,
     navigateBack: () -> Unit,
-    /** Modifier untuk Behavior -> agar Appbar Menyusut saat digulir kebawah*/
     modifier: Modifier,
     viewModel: EntryViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ){
@@ -156,68 +159,80 @@ fun FormInputMenu(
     onValueChange: (DetailMenu) -> Unit = {},
     enabled: Boolean = true
 ){
-    Column (
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+    Card(
+        modifier = modifier
+            .padding(dimensionResource(id = R.dimen.padding_small))
+            .size(width = 350.dp, height = 510.dp)
+            .alpha(0.8f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ){
-        /** OutlinedTextField memerlukan String sbg nilai value*/
-        OutlinedTextField(
-            value = detailMenu.idmenu?.toString() ?: "",
-            onValueChange = {
-                onValueChange(
-                    /** it = nilai yg dimasukkan */
-                    if (it.isEmpty()) detailMenu.copy(idmenu = null)
-                    else detailMenu.copy(idmenu = it.toIntOrNull())
+        Column(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_Large)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_small))
+        ){
+            Column (
+                modifier = modifier,
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium))
+            ){
+                /** OutlinedTextField memerlukan String sbg nilai value*/
+                OutlinedTextField(
+                    value = detailMenu.idmenu?.toString() ?: "",
+                    onValueChange = {
+                        onValueChange(
+                            /** it = nilai yg dimasukkan */
+                            if (it.isEmpty()) detailMenu.copy(idmenu = null)
+                            else detailMenu.copy(idmenu = it.toIntOrNull())
+                        )
+                    },
+                    label = { Text(stringResource(R.string.idmenu)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
-            },
-            label = { Text(stringResource(R.string.idmenu)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
-        OutlinedTextField(
-            value = detailMenu.menu,
-            onValueChange = {onValueChange(detailMenu.copy(menu = it)) },
-            label = { Text(stringResource(R.string.menu)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailMenu.harga,
-            onValueChange = {onValueChange(detailMenu.copy(harga = it)) },
-            label = { Text(stringResource(R.string.harga)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailMenu.ketersediaan,
-            onValueChange = {onValueChange(detailMenu.copy(ketersediaan = it)) },
-            label = { Text(text = stringResource(R.string.ketersediaan)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-        OutlinedTextField(
-            value = detailMenu.kategori,
-            onValueChange = {onValueChange(detailMenu.copy(kategori = it)) },
-            label = { Text(text = stringResource(R.string.kategori)) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
+                OutlinedTextField(
+                    value = detailMenu.menu,
+                    onValueChange = {onValueChange(detailMenu.copy(menu = it)) },
+                    label = { Text(stringResource(R.string.menu)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = detailMenu.harga,
+                    onValueChange = {onValueChange(detailMenu.copy(harga = it)) },
+                    label = { Text(stringResource(R.string.harga)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = detailMenu.ketersediaan,
+                    onValueChange = {onValueChange(detailMenu.copy(ketersediaan = it)) },
+                    label = { Text(text = stringResource(R.string.ketersediaan)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true
+                )
+                OutlinedTextField(
+                    value = detailMenu.kategori,
+                    onValueChange = {onValueChange(detailMenu.copy(kategori = it)) },
+                    label = { Text(text = stringResource(R.string.kategori)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = enabled,
+                    singleLine = true
+                )
 
-        if (enabled){
-            Text(
-                text = stringResource(R.string.required_field),
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
-            )
+                Spacer(modifier = Modifier.padding(top = 0.dp))
+                Divider()
+
+                if (enabled){
+                    Text(
+                        text = stringResource(R.string.required_field),
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium))
+                    )
+                }
+            }
         }
-        Divider(
-            thickness = dimensionResource(R.dimen.padding_small),
-            modifier = Modifier.padding(bottom = dimensionResource(R.dimen.padding_medium))
-        )
     }
 }

@@ -82,13 +82,10 @@ fun MenuScreen(
     navigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
-){
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    //------- SEARCH -------/
-    val searchQueryState = remember { mutableStateOf("") }
-
-    Scaffold (
+    Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             CafeTopAppBar(
@@ -105,7 +102,7 @@ fun MenuScreen(
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_Large)),
                 horizontalAlignment = Alignment.End
-            ){
+            ) {
                 Row(
                     modifier = Modifier
                         .padding(dimensionResource(id = R.dimen.padding_Large))
@@ -139,17 +136,19 @@ fun MenuScreen(
             }
 
         },
-    ){
-            innerPadding ->
+    ) { innerPadding ->
+
         val uiStateMenu by viewModel.menuUiState.collectAsState()
+
+        //------- SEARCH MENU-------/
+        val searchQueryState = remember { mutableStateOf("") }
 
         // filter = pemfilteran terhadap elemen yg ditampilkan (menu)
         //ignorecase true = mengabaikan kondisi dari huruf kapital / huruf kecilnya
+
         val filteredMenu = uiStateMenu.listMenu.filter {
             it.menu.contains(searchQueryState.value, ignoreCase = true)
         }
-
-
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             Image(
@@ -160,7 +159,12 @@ fun MenuScreen(
             )
 
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(top = 20.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = 15.dp,
+                        bottom = 15.dp
+                    ),
                 contentPadding = innerPadding,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -168,7 +172,7 @@ fun MenuScreen(
                     OutlinedTextField(
                         value = searchQueryState.value,
                         onValueChange = { searchQueryState.value = it },
-                        label = { Text("Search") },
+                        label = { Text("Search Menu") },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Search,
@@ -176,7 +180,13 @@ fun MenuScreen(
                                 modifier = Modifier.size(24.dp)
                             )
                         },
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                end = 35.dp,
+                                start = 35.dp,
+                                bottom = 10.dp
+                            )
                     )
                 }
                 if (filteredMenu.isEmpty()) {
@@ -185,143 +195,35 @@ fun MenuScreen(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 30.dp)
+                                .padding(top = 75.dp)
                         ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
-                                    .alpha(0.8f)
-                                    .padding(bottom = 150.dp)
                             ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
+                                Image(
+                                    painter = painterResource(id = R.drawable.kucingsyedihmenu),
+                                    contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
                                     modifier = Modifier
-                                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
-                                        .clip(CircleShape)
-                                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.odycafe),
-                                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
-                                        modifier = Modifier.fillMaxSize()
-                                    )
-                                }
-                                Spacer(modifier = Modifier.padding(top = 35.dp))
-                                Text(
-                                    text = stringResource(R.string.deskripsi_no_item),
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = FontFamily.Cursive,
-                                    fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontSize = 25.sp,
-                                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
+                                        .fillMaxSize()
+                                        .size(400.dp)
                                 )
                             }
                         }
                     }
-                } else {
+                }  else {
                     items(filteredMenu) { menu ->
                         DataMenu(
                             menu = menu,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 30.dp, vertical = 2.dp)
+                                .padding(horizontal = 30.dp)
                                 .clickable { onDetailClick(menu.idmenu) }
                         )
                     }
                 }
             }
         }
-
-
-
-
-//        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-//
-//            Image(
-//                painter = painterResource(id = R.drawable.esteh),
-//                contentDescription = null,
-//                modifier = Modifier.fillMaxSize(),
-//                contentScale = ContentScale.FillBounds,
-//            )
-//
-//            if (filteredMenu.isEmpty()) {
-//                Box(
-//                    contentAlignment = Alignment.Center,
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(top = 30.dp)
-//                ) {
-//                    Column(
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        modifier = Modifier
-//                            .alpha(0.8f)
-//                            .padding(bottom = 150.dp)
-//                    ) {
-//                        Box(
-//                            contentAlignment = Alignment.Center,
-//                            modifier = Modifier
-//                                .size(180.dp) // Ubah ukuran sesuai dengan preferensi
-//                                .clip(CircleShape)
-//                                .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
-//                        ) {
-//                            Image(
-//                                painter = painterResource(id = R.drawable.odycafe),
-//                                contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
-//                                modifier = Modifier.fillMaxSize()
-//                            )
-//                        }
-//                        Spacer(modifier = Modifier.padding(top = 35.dp))
-//                        Text(
-//                            text = stringResource(R.string.deskripsi_no_item),
-//                            textAlign = TextAlign.Center,
-//                            fontFamily = FontFamily.Cursive,
-//                            fontWeight = FontWeight.Bold,
-//                            style = MaterialTheme.typography.titleLarge,
-//                            fontSize = 25.sp,
-//                            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
-//                        )
-//                    }
-//                }
-//            } else {
-//                LazyColumn(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(top = 35.dp),
-//                    contentPadding = innerPadding,
-//                    verticalArrangement = Arrangement.spacedBy(16.dp)
-//                ) {
-//                    item {
-//                        OutlinedTextField(
-//                            value = searchQueryState.value,
-//                            onValueChange = { searchQueryState.value = it },
-//                            label = { Text("Search") },
-//                            leadingIcon = {
-//                                Icon(
-//                                    imageVector = Icons.Default.Search,
-//                                    contentDescription = "Search Icon",
-//                                    modifier = Modifier.size(24.dp) // Ukuran ikon bisa disesuaikan
-//                                )
-//                            },
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 16.dp)
-//                        )
-//                    }
-//
-//                    items(filteredMenu) { menu ->
-//                        DataMenu(
-//                            menu = menu,
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(horizontal = 30.dp, vertical = 2.dp)
-//                                .clickable { onDetailClick(menu.idmenu) }
-//                        )
-//                    }
-//                }
-//
-//            }
-//        }
     }
 }
 

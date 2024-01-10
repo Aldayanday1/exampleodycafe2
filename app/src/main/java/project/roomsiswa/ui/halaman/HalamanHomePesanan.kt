@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,6 +37,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -136,9 +138,19 @@ fun PesananScreen(
         },
     ){
             innerPadding ->
+
         val uiStatePesanan by viewModel.pesananUiState.collectAsState()
 
-        // Menambahkan BoxWithConstraints di dalam Scaffold
+        //------- SEARCH PESANAN -------/
+        val searchQueryState = remember { mutableStateOf("") }
+
+        // filter = pemfilteran terhadap elemen yg ditampilkan (pesanan)
+        //ignorecase true = mengabaikan kondisi dari huruf kapital / huruf kecilnya
+
+        val filteredPesanan = uiStatePesanan.listPesanan.filter {
+            it.idMenuForeignKey.contains(searchQueryState.value, ignoreCase = true)
+        }
+
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.esteh),
@@ -147,118 +159,72 @@ fun PesananScreen(
                 contentScale = ContentScale.FillBounds,
             )
 
-            // Memasukkan konten utama (BodyPesanan) di atas latar belakang
-            BodyPesanan(
-                itemPesanan = uiStatePesanan.listPesanan,
+            LazyColumn(
                 modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                onPesananClick = onDetailClick
-            )
-
-//            Column(
-//                modifier = Modifier
-//                    .padding(top = 100.dp)
-//                    .align(Alignment.TopCenter),
-//                horizontalAlignment = Alignment.CenterHorizontally
-//            ) {
-//                Row(
-//                    modifier = Modifier
-//                        .padding(dimensionResource(id = R.dimen.padding_Large))
-//                        .alpha(0.8f),
-//                ) {
-//                    FloatingActionButton(
-//                        onClick = navigateToItemEntry,
-//                        shape = MaterialTheme.shapes.medium,
-//                        modifier = Modifier.padding(end = dimensionResource(id = R.dimen.padding_small))
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Default.Add,
-//                            contentDescription = stringResource(R.string.entry_pesanan)
-//                        )
-//                    }
-//                    FloatingActionButton(
-//                        onClick = navigateToItemEntry,
-//                        shape = MaterialTheme.shapes.medium
-//                    ) {
-//                        Icon(
-//                            imageVector = Icons.Default.Home,
-//                            contentDescription = stringResource(R.string.entry_pesanan)
-//                        )
-//                    }
-//                }
-//            }
-        }
-    }
-}
-
-@Composable
-fun BodyPesanan(
-    itemPesanan: List<Pesanan>,
-    modifier: Modifier = Modifier,
-    onPesananClick: (Int) -> Unit = {}
-){
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ){
-        if (itemPesanan.isEmpty()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .alpha(0.8f)
-                    .padding(bottom = 150.dp)
-            ){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(180.dp) // Ubah ukuran sesuai dengan preferensi
-                        .clip(CircleShape)
-                        .alpha(0.8f),// Memotong gambar menjadi bentuk bulat
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.odycafe),
-                        contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
-                        modifier = Modifier.fillMaxSize()
+                    .fillMaxSize()
+                    .padding(
+                        top = 15.dp,
+                        bottom = 15.dp
+                    ),
+                contentPadding = innerPadding,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                item {
+                    OutlinedTextField(
+                        value = searchQueryState.value,
+                        onValueChange = { searchQueryState.value = it },
+                        label = { Text("Search Pesanan") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = "Search Icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                end = 35.dp,
+                                start = 35.dp,
+                                bottom = 10.dp
+                            )
                     )
                 }
-                Spacer(modifier = Modifier.padding(top = 35.dp))
-                Text(
-                    text = stringResource(R.string.deskripsi_no_item),
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = 25.sp,
-                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_Large))
-                )
+                if (filteredPesanan.isEmpty()) {
+                    item {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 75.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.kucingsyedihpesanan),
+                                    contentDescription = null, // Deskripsi konten, bisa dikosongkan jika tidak diperlukan
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .size(400.dp)
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    items(filteredPesanan) { pesanan ->
+                        DataPesanan(
+                            pesanan = pesanan,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 30.dp)
+                                // perwakilan atas pemanggilan data (pesanan)
+                                .clickable { onDetailClick(pesanan.idpesanan) }
+                        )
+                    }
+                }
             }
-        } else {
-            ListPesanan(
-                itemPesanan = itemPesanan,
-                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
-                onItemPesananClick = { onPesananClick(it.idpesanan) }
-            )
-        }
-    }
-}
-
-
-@Composable
-fun ListPesanan(
-    itemPesanan: List<Pesanan>,
-    modifier: Modifier = Modifier,
-    onItemPesananClick: (Pesanan) -> Unit
-){
-    LazyColumn(modifier = Modifier){
-        items(items = itemPesanan, key = {it.idpesanan}){
-                person ->
-            DataPesanan(
-                pesanan = person,
-                modifier = Modifier
-                    .padding(dimensionResource(id = R.dimen.padding_small))
-                    .clickable { onItemPesananClick(person) }
-            )
         }
     }
 }
